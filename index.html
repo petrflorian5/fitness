@@ -22,8 +22,8 @@
     --purple: #a78bfa;
     --orange: #f97316;
     --text: #f1f5f9;
-    --sec: #8b9ab5;
-    --muted: #3d4f6b;
+    --sec: #a8b8d0;
+    --muted: #6b7f9a;
     --mono: 'JetBrains Mono', monospace;
     --sans: 'DM Sans', sans-serif;
   }
@@ -39,14 +39,14 @@
   /* Sidebar */
   .logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
   .logo-name { font-size: 15px; font-weight: 600; color: var(--text); }
-  .logo-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-family: var(--mono); }
+  .logo-sub { font-size: 11px; color: #5a7090; margin-top: 2px; font-family: var(--mono); }
   .logo-badge { display: inline-flex; align-items: center; gap: 5px; margin-top: 8px; background: #1a2235; border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; }
   .logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
   .logo-badge span { font-size: 10px; color: var(--sec); font-family: var(--mono); }
 
   .nav { padding: 12px 10px; flex: 1; }
-  .nav-section { font-size: 9px; color: var(--muted); font-family: var(--mono); letter-spacing: 1.5px; padding: 10px 10px 5px; text-transform: uppercase; }
+  .nav-section { font-size: 10px; color: #5a7090; font-family: var(--mono); letter-spacing: 1.5px; padding: 10px 10px 5px; text-transform: uppercase; }
   .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; color: var(--sec); font-size: 13px; font-weight: 400; border: 1px solid transparent; transition: all .15s; user-select: none; }
   .nav-item:hover { background: var(--card2); color: var(--text); }
   .nav-item.active { background: var(--card2); border-color: var(--border); color: var(--text); }
@@ -61,7 +61,7 @@
   /* Header */
   .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--card); }
   .page-title { font-size: 17px; font-weight: 600; }
-  .page-sub { font-size: 11px; color: var(--sec); margin-top: 1px; }
+  .page-sub { font-size: 12px; color: var(--sec); margin-top: 1px; }
   .topbar-right { display: flex; align-items: center; gap: 10px; }
   .week-badge { background: var(--card2); border: 1px solid var(--border); border-radius: 7px; padding: 6px 12px; font-size: 11px; font-family: var(--mono); color: var(--accent); }
 
@@ -78,10 +78,10 @@
   /* Stats row */
   .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
   .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
-  .stat-label { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+  .stat-label { font-size: 11px; color: var(--sec); font-family: var(--mono); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
   .stat-value { font-size: 26px; font-weight: 700; line-height: 1; font-family: var(--mono); }
   .stat-unit { font-size: 12px; font-weight: 400; color: var(--sec); margin-left: 3px; }
-  .stat-sub { font-size: 10px; color: var(--muted); margin-top: 5px; }
+  .stat-sub { font-size: 11px; color: var(--sec); margin-top: 5px; }
   .stat-change { font-size: 11px; margin-top: 5px; font-family: var(--mono); }
   .change-pos { color: var(--green); }
   .change-neg { color: var(--red); }
@@ -90,18 +90,18 @@
   /* Progress bar */
   .progress-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; }
   .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-  .progress-title { font-size: 12px; font-family: var(--mono); color: var(--sec); }
+  .progress-title { font-size: 13px; font-family: var(--mono); color: var(--sec); }
   .progress-pct { font-size: 14px; font-weight: 700; font-family: var(--mono); color: var(--accent); }
-  .progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); font-family: var(--mono); margin-bottom: 6px; }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 12px; color: var(--sec); font-family: var(--mono); margin-bottom: 6px; }
   .prog-bar-bg { background: var(--border); border-radius: 6px; height: 8px; overflow: hidden; }
   .prog-bar-fill { height: 100%; border-radius: 6px; transition: width .6s ease; }
-  .progress-note { font-size: 10px; color: var(--muted); margin-top: 6px; text-align: center; font-family: var(--mono); }
+  .progress-note { font-size: 12px; color: var(--sec); margin-top: 6px; text-align: center; font-family: var(--mono); }
 
   /* Chart card */
   .chart-grid { display: grid; grid-template-columns: 1fr 280px; gap: 14px; margin-bottom: 18px; }
   .chart-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 16px 12px; }
   .chart-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-  .chart-sub { font-size: 11px; color: var(--sec); margin-bottom: 10px; }
+  .chart-sub { font-size: 12px; color: var(--sec); margin-bottom: 10px; }
   .chart-legend { display: flex; gap: 16px; font-size: 10px; color: var(--sec); margin-bottom: 12px; font-family: var(--mono); }
   .legend-dot { width: 22px; height: 2px; display: inline-block; border-radius: 1px; }
   .chart-wrap { position: relative; height: 260px; }
