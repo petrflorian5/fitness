@@ -233,7 +233,7 @@
   <div class="sidebar">
     <div class="logo">
       <div class="logo-name">Petr Florián</div>
-      <div class="logo-sub">Fitness progress tracker</div>
+      <div class="logo-sub">fitness_2026.dash</div>
       <div class="logo-badge">
         <div class="logo-dot"></div>
         <span>84,4 → 75 kg</span>
@@ -421,6 +421,12 @@
               <textarea id="f_notes" rows="3" placeholder="Co se dařilo, co ne, jak se cítím..."></textarea>
             </div>
             <button class="save-btn" id="saveBtn" onclick="saveDailyCheckIn()">Uložit check-in</button>
+            <button id="deleteBtn" onclick="deleteDailyCheckIn()"
+              style="width:100%;margin-top:8px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:9px;font-size:12px;cursor:pointer;font-family:var(--sans);transition:all .2s"
+              onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+              onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+              Smazat záznam pro tento den
+            </button>
           </div>
 
           <!-- HISTORY -->
@@ -953,7 +959,7 @@ function showTab(id, navEl) {
   document.getElementById('tab-' + id).classList.add('active');
   if (navEl) navEl.classList.add('active');
   document.getElementById('pageTitle').textContent = PAGE_TITLES[id] || id;
-  if (id === 'checkin') loadFormForDate();
+  if (id === 'checkin') { loadFormForDate(); renderHistory(); }
   if (id === 'training') renderTraining();
   if (id === 'supps') renderSupps();
 }
@@ -1269,6 +1275,18 @@ function saveDailyCheckIn() {
   btn.textContent = '✓  Uloženo!';
   btn.classList.add('saved');
   setTimeout(() => { btn.textContent = 'Uložit check-in'; btn.classList.remove('saved'); }, 2000);
+}
+
+function deleteDailyCheckIn() {
+  const key = toDateKey(ciCurrentDate);
+  if (!checkIns[key]) return;
+  if (!confirm(`Smazat záznam pro ${key}?`)) return;
+  delete checkIns[key];
+  saveData();
+  loadFormForDate();
+  renderHistory();
+  renderOverview();
+  showToast('🗑 Záznam smazán', '#ef4444');
 }
 
 function setHistoryView(v) {
@@ -1716,7 +1734,7 @@ function refreshAll() {
   renderOverview();
   renderPlan();
   renderTraining();
-  if (document.getElementById('tab-checkin').classList.contains('active')) loadFormForDate();
+  if (document.getElementById('tab-checkin').classList.contains('active')) { loadFormForDate(); renderHistory(); }
   if (document.getElementById('tab-supps').classList.contains('active')) renderSupps();
 }
 
