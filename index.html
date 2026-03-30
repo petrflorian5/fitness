@@ -1561,22 +1561,11 @@ function renderDayNoteForm(dateKey) {
 function renderCoachingForm(dateKey) {
   const cl = coachingLog[dateKey] || {};
   return `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-      <div>
-        <label style="display:block;font-size:10px;color:var(--sec);margin-bottom:3px">Skupina</label>
-        <select onchange="saveCoachingField('${dateKey}','group',this.value)"
-          style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:6px 8px;outline:none">
-          <option value="U8" ${cl.group==='U8'?'selected':''}>U8</option>
-          <option value="U9" ${cl.group==='U9'?'selected':''}>U9</option>
-          <option value="U8+U9" ${cl.group==='U8+U9'?'selected':''}>U8 + U9</option>
-        </select>
-      </div>
-      <div>
-        <label style="display:block;font-size:10px;color:var(--sec);margin-bottom:3px">Počet hráčů</label>
-        <input type="number" value="${cl.players||''}" placeholder="0"
-          onchange="saveCoachingField('${dateKey}','players',this.value)"
-          style="width:100%;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:7px 8px;outline:none;box-sizing:border-box">
-      </div>
+    <div style="margin-bottom:10px">
+      <label style="display:block;font-size:10px;color:var(--sec);margin-bottom:3px">Počet hráčů</label>
+      <input type="number" value="${cl.players||''}" placeholder="0"
+        onchange="saveCoachingField('${dateKey}','players',this.value)"
+        style="width:160px;background:var(--card2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:12px;padding:7px 8px;outline:none;box-sizing:border-box">
     </div>
     <div style="margin-bottom:8px">
       <label style="display:block;font-size:10px;color:var(--sec);margin-bottom:3px">Téma / Focus jednotky</label>
@@ -1620,7 +1609,7 @@ function renderCoachingHistory() {
         style="padding:8px 10px;background:var(--card2);border-radius:6px;margin-bottom:5px;cursor:pointer;border-left:3px solid #8b5cf6">
         <div style="display:flex;justify-content:space-between;margin-bottom:2px">
           <span style="font-size:10px;font-weight:600;font-family:var(--mono)">${d}</span>
-          <span style="font-size:10px;color:#8b5cf6">${cl.group||'U8'} ${cl.players?'· '+cl.players+' hráčů':''}</span>
+          <span style="font-size:10px;color:#8b5cf6">U8+U9${cl.players?' · '+cl.players+' hráčů':''}</span>
         </div>
         ${cl.focus?`<div style="font-size:10px;color:var(--sec);font-style:italic">${cl.focus}</div>`:''}
         <div style="font-size:10px;color:var(--muted);margin-top:2px">${cl.notes.slice(0,70)}${cl.notes.length>70?'…':''}</div>
