@@ -260,6 +260,9 @@
       <div class="nav-item" onclick="showTab('analytics', this)">
         <span class="nav-icon">◎</span> Analytika
       </div>
+      <div class="nav-item" onclick="showTab('lifeweeks', this)">
+        <span class="nav-icon">▦</span> Život v týdnech
+      </div>
     </div>
 
     <div class="week-selector">
@@ -369,6 +372,17 @@
               </div>
             </div>
 
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+              <div class="field" style="margin-bottom:0">
+                <label>Kroky</label>
+                <input type="number" id="f_steps" placeholder="0">
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label style="color:#3b82f6">Hydratace (ml)</label>
+                <input type="number" id="f_water" placeholder="0">
+              </div>
+            </div>
+
             <div style="font-size:11px;color:var(--sec);margin-bottom:6px;font-family:var(--mono)">MAKRA</div>
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
               <div class="field" style="margin-bottom:0">
@@ -399,28 +413,6 @@
                 <label>Skóre (hodinky)</label>
                 <input type="number" min="0" max="100" id="f_sleepScore" placeholder="0–100">
               </div>
-            </div>
-
-            <div class="slider-row">
-              <div class="slider-header">
-                <span>Energie a vitalita</span>
-                <span class="slider-val" id="sv_energy" style="color:var(--accent)">7/10</span>
-              </div>
-              <input type="range" min="1" max="10" value="7" id="f_energy" oninput="updateSlider('energy',this.value)">
-            </div>
-            <div class="slider-row">
-              <div class="slider-header">
-                <span>Kvalita spánku (subjektivní)</span>
-                <span class="slider-val" id="sv_sleep" style="color:var(--accent)">7/10</span>
-              </div>
-              <input type="range" min="1" max="10" value="7" id="f_sleep" oninput="updateSlider('sleep',this.value)">
-            </div>
-            <div class="slider-row">
-              <div class="slider-header">
-                <span>Výkon MT / gym</span>
-                <span class="slider-val" id="sv_mt" style="color:var(--accent)">7/10</span>
-              </div>
-              <input type="range" min="1" max="10" value="7" id="f_mt" oninput="updateSlider('mt',this.value)">
             </div>
 
             <div class="field">
@@ -540,9 +532,9 @@
             <div class="chart-wrap" style="height:220px"><canvas id="chartMacros"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-title">Energie · Spánek · Výkon</div>
-            <div class="chart-sub">Subjektivní skóre 1–10</div>
-            <div class="chart-wrap" style="height:220px"><canvas id="chartScores"></canvas></div>
+            <div class="chart-title">Kroky · Hydratace</div>
+            <div class="chart-sub">Denní aktivita a příjem vody</div>
+            <div class="chart-wrap" style="height:220px"><canvas id="chartStepsWater"></canvas></div>
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
@@ -557,6 +549,12 @@
             <div class="chart-wrap" style="height:200px"><canvas id="chartBurned"></canvas></div>
           </div>
         </div>
+      </div>
+
+
+      <!-- LIFE IN WEEKS TAB -->
+      <div id="tab-lifeweeks" class="tab">
+        <div id="lifeWeeksContent"></div>
       </div>
 
     </div><!-- /content -->
@@ -1001,7 +999,7 @@ function jumpToToday() {
 
 const PAGE_TITLES = {
   overview: 'Přehled', checkin: 'Check-in',
-  plan: 'Plán výživy', training: 'Trénink', supps: 'Doplňky', analytics: 'Analytika'
+  plan: 'Plán výživy', training: 'Trénink', supps: 'Doplňky', analytics: 'Analytika', lifeweeks: 'Život v týdnech'
 };
 
 function showTab(id, navEl) {
@@ -1022,6 +1020,7 @@ function showTab(id, navEl) {
   if (id === 'training') renderTraining();
   if (id === 'supps') renderSupps();
   if (id === 'analytics') renderAnalytics();
+  if (id === 'lifeweeks') renderLifeWeeks();
 }
 
 // ═══════════════════════════════════════
@@ -1125,9 +1124,9 @@ function renderOverview() {
       ['Váha', `${parseFloat(todayCi.weight).toFixed(1)} kg`],
       ['Kcal', todayCi.kcal ? `${todayCi.kcal} kcal` : '—'],
       ['Makra', (todayCi.protein||todayCi.carbs||todayCi.fat) ? `B:${todayCi.protein||'?'}g S:${todayCi.carbs||'?'}g T:${todayCi.fat||'?'}g` : '—'],
-      ['Energie', `${todayCi.energy}/10`],
-      ['Spánek', `${todayCi.sleep}/10${sleepInfo}`],
-      ['MT výkon', `${todayCi.mt}/10`],
+      ['Kroky', todayCi.steps ? parseInt(todayCi.steps).toLocaleString('cs-CZ') : '—'],
+      ['Hydratace', todayCi.water ? (parseInt(todayCi.water)/1000).toFixed(1)+' l' : '—'],
+      ['Spánek', sleepInfo ? sleepInfo.trim() : (todayCi.sleepScore ? '🏅 '+todayCi.sleepScore : '—')],
     ].map(([l,v]) => `<div style="display:flex;justify-content:space-between;font-size:11px;padding:3px 0">
       <span style="color:var(--sec)">${l}</span><span style="font-family:var(--mono)">${v}</span></div>`).join('') +
     (todayCi.notes ? `<div style="font-size:10px;color:var(--muted);font-style:italic;border-top:1px solid var(--border);padding-top:6px;margin-top:4px">${todayCi.notes}</div>` : '');
@@ -1291,19 +1290,12 @@ function loadFormForDate() {
   document.getElementById('f_carbs').value   = ci.carbs    || '';
   document.getElementById('f_fat').value     = ci.fat      || '';
   document.getElementById('f_burned').value    = ci.burned     || '';
+  document.getElementById('f_steps').value     = ci.steps      || '';
+  document.getElementById('f_water').value     = ci.water      || '';
   document.getElementById('f_sleepTime').value  = ci.sleepTime  || '';
   document.getElementById('f_wakeTime').value   = ci.wakeTime   || '';
   document.getElementById('f_sleepScore').value = ci.sleepScore || '';
 
-  const e = ci.energy !== undefined ? ci.energy : 7;
-  const s = ci.sleep  !== undefined ? ci.sleep  : 7;
-  const m = ci.mt     !== undefined ? ci.mt     : 7;
-  document.getElementById('f_energy').value = e;
-  document.getElementById('f_sleep').value  = s;
-  document.getElementById('f_mt').value     = m;
-  updateSlider('energy', e);
-  updateSlider('sleep',  s);
-  updateSlider('mt',     m);
   document.getElementById('f_notes').value  = ci.notes || '';
 
   renderHistory();
@@ -1315,15 +1307,14 @@ function saveDailyCheckIn() {
     weight:     document.getElementById('f_weight').value,
     kcal:       document.getElementById('f_kcal').value,
     burned:     document.getElementById('f_burned').value,
+    steps:      document.getElementById('f_steps').value,
+    water:      document.getElementById('f_water').value,
     protein:    document.getElementById('f_protein').value,
     carbs:      document.getElementById('f_carbs').value,
     fat:        document.getElementById('f_fat').value,
     sleepTime:  document.getElementById('f_sleepTime').value,
     wakeTime:   document.getElementById('f_wakeTime').value,
     sleepScore: document.getElementById('f_sleepScore').value,
-    energy:     parseInt(document.getElementById('f_energy').value),
-    sleep:      parseInt(document.getElementById('f_sleep').value),
-    mt:         parseInt(document.getElementById('f_mt').value),
     notes:      document.getElementById('f_notes').value,
   };
   checkIns[key] = ci;
@@ -1386,7 +1377,7 @@ function renderHistory() {
       return `<div class="history-item${isCur?' current':''}" onclick="ciJumpTo('${k}')">
         <div>
           <div class="hi-week" style="font-family:var(--mono)">${dateStr}</div>
-          <div class="hi-scores">E:${ci.energy} · Sp:${ci.sleep} · MT:${ci.mt}${sleepDur}${ci.sleepScore?' · 🏅'+ci.sleepScore:''}</div>
+          <div class="hi-scores">${ci.steps?'👟 '+parseInt(ci.steps).toLocaleString('cs-CZ')+' kroků':''} ${ci.water?'· 💧 '+(parseInt(ci.water)/1000).toFixed(1)+'l':''}${sleepDur?'· 😴'+sleepDur:''}${ci.sleepScore?' · 🏅'+ci.sleepScore:''}</div>
           ${ci.kcal?`<div style="font-size:10px;color:var(--muted);font-family:var(--mono)">${ci.kcal} kcal · B:${ci.protein||'?'}g S:${ci.carbs||'?'}g T:${ci.fat||'?'}g</div>`:''}
           ${ci.notes?`<div class="hi-note">${ci.notes.slice(0,50)}${ci.notes.length>50?'…':''}</div>`:''}
         </div>
@@ -1848,9 +1839,8 @@ function renderAnalytics() {
   const proteins = sortedKeys.map(k => checkIns[k].protein ? parseInt(checkIns[k].protein) : null);
   const carbs    = sortedKeys.map(k => checkIns[k].carbs   ? parseInt(checkIns[k].carbs)   : null);
   const fats     = sortedKeys.map(k => checkIns[k].fat     ? parseInt(checkIns[k].fat)     : null);
-  const energies = sortedKeys.map(k => checkIns[k].energy  || null);
-  const sleeps   = sortedKeys.map(k => checkIns[k].sleep   || null);
-  const mts      = sortedKeys.map(k => checkIns[k].mt      || null);
+  const steps    = sortedKeys.map(k => checkIns[k].steps   ? parseInt(checkIns[k].steps)   : null);
+  const waters   = sortedKeys.map(k => checkIns[k].water   ? parseInt(checkIns[k].water)   : null);
   const sleepScores = sortedKeys.map(k => checkIns[k].sleepScore ? parseInt(checkIns[k].sleepScore) : null);
   const sleepDurs = sortedKeys.map(k => {
     const ci = checkIns[k];
@@ -1944,24 +1934,23 @@ function renderAnalytics() {
     }
   });
 
-  // ── Graf 4: Energie / Spánek / MT výkon ──
-  makeChart('chartScores', {
-    type: 'line',
+  // ── Graf 4: Kroky + Hydratace ──
+  makeChart('chartStepsWater', {
+    type: 'bar',
     data: {
       labels,
       datasets: [
-        { label:'Energie', data: energies, borderColor:'#f59e0b', borderWidth:2, pointRadius:2, tension:0.3, fill:false },
-        { label:'Spánek',  data: sleeps,   borderColor:'#a78bfa', borderWidth:2, pointRadius:2, tension:0.3, fill:false },
-        { label:'MT výkon',data: mts,      borderColor:'#ef4444', borderWidth:2, pointRadius:2, tension:0.3, fill:false },
+        { label:'Kroky', data: steps, backgroundColor:'rgba(34,197,94,0.5)', borderColor:'#22c55e', borderWidth:1, yAxisID:'y' },
+        { label:'Voda (ml)', data: waters, type:'line', borderColor:'#3b82f6', borderWidth:2, pointRadius:3, tension:0.3, fill:false, yAxisID:'y2' },
       ]
     },
-    options: { ...baseOpts('/10'),
-      plugins: { ...baseOpts().plugins,
-        legend: { display: true, labels: { color:'#a8b8d0', font:{size:10}, boxWidth:12, padding:10 } }
-      },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: true, labels: { color:'#a8b8d0', font:{size:10}, boxWidth:12, padding:10 } }, tooltip: tooltipStyle },
       scales: {
         x: { grid:{color:gridColor}, ticks:{...tickStyle,maxTicksLimit:8}, border:{color:gridColor} },
-        y: { min:0, max:10, grid:{color:gridColor}, ticks:{...tickStyle, stepSize:2}, border:{color:gridColor} }
+        y:  { position:'left',  min:0, grid:{color:gridColor}, ticks:{...tickStyle, callback:v=>v.toLocaleString('cs-CZ')}, border:{color:gridColor} },
+        y2: { position:'right', min:0, grid:{display:false}, ticks:{...tickStyle, callback:v=>v+'ml'}, border:{color:gridColor} },
       }
     }
   });
@@ -2010,6 +1999,88 @@ function renderAnalytics() {
     }
   });
 }
+
+
+// ═══════════════════════════════════════
+// LIFE IN WEEKS
+// ═══════════════════════════════════════
+
+function renderLifeWeeks() {
+  const BIRTHDAY = new Date(1989, 11, 2);
+  const LIFE_YEARS = 90;
+  const TOTAL_WEEKS = LIFE_YEARS * 52;
+  const today = new Date();
+
+  const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+  const weeksLived = Math.floor((today - BIRTHDAY) / msPerWeek);
+  const weeksLeft = TOTAL_WEEKS - weeksLived;
+  const yearsLived = parseFloat(((today - BIRTHDAY) / (365.25 * 24 * 60 * 60 * 1000)).toFixed(1));
+  const pctLived = ((weeksLived / TOTAL_WEEKS) * 100).toFixed(1);
+
+  // Mřížka — každý řádek = 1 rok (52 týdnů), 14px čtverečky
+  let gridRows = '';
+  for (let year = 0; year < LIFE_YEARS; year++) {
+    let row = `<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">`;
+    row += `<div style="font-size:11px;color:#6b7f9a;font-family:'JetBrains Mono',monospace;width:28px;text-align:right;flex-shrink:0">${year}</div>`;
+    row += `<div style="display:flex;gap:3px;flex-shrink:0">`;
+    for (let w = 0; w < 52; w++) {
+      const weekIdx = year * 52 + w;
+      const isCurrent = weekIdx === weeksLived;
+      const isLived = weekIdx < weeksLived;
+
+      let bg, border, shadow = '';
+      if (isCurrent) {
+        bg = '#f59e0b'; border = '#f59e0b'; shadow = 'box-shadow:0 0 7px rgba(245,158,11,0.9);';
+      } else if (isLived) {
+        bg = '#3d2008'; border = '#2e1806';
+      } else {
+        bg = 'transparent'; border = '#1e2535';
+      }
+
+      row += `<div style="width:14px;height:14px;border-radius:2px;flex-shrink:0;background:${bg};border:1px solid ${border};${shadow}"></div>`;
+    }
+    row += `</div></div>`;
+    gridRows += row;
+  }
+
+  document.getElementById('lifeWeeksContent').innerHTML = `
+    <!-- Stats -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
+      <div class="stat-card">
+        <div class="stat-label">Věk</div>
+        <div class="stat-value" style="color:var(--accent)">${yearsLived}<span class="stat-unit">let</span></div>
+        <div class="stat-sub">2. 12. 1989</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Týdnů prožito</div>
+        <div class="stat-value" style="color:var(--blue)">${weeksLived.toLocaleString('cs-CZ')}<span class="stat-unit">týdnů</span></div>
+        <div class="stat-sub">${pctLived} % života</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Týdnů zbývá</div>
+        <div class="stat-value" style="color:var(--green)">${weeksLeft.toLocaleString('cs-CZ')}<span class="stat-unit">týdnů</span></div>
+        <div class="stat-sub">do 90 let · ${Math.round(weeksLeft/52)} let</div>
+      </div>
+    </div>
+
+    <!-- Legenda -->
+    <div style="display:flex;gap:16px;margin-bottom:14px;font-size:11px;color:var(--sec)">
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#3d2008;display:inline-block"></span>Prožito</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#f59e0b;display:inline-block"></span>Tento týden</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:transparent;border:1px solid #1e2535;display:inline-block"></span>Zbývá</span>
+    </div>
+
+    <!-- Grid -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;overflow-x:auto">
+      ${gridRows}
+    </div>
+
+    <div style="margin-top:10px;font-size:11px;color:var(--muted);text-align:center;font-family:'JetBrains Mono',monospace">
+      Každý čtvereček = 1 týden · 90 let · ${TOTAL_WEEKS.toLocaleString('cs-CZ')} týdnů celkem
+    </div>
+  `;
+}
+
 
 // ═══════════════════════════════════════
 // WEEK SELECTOR
