@@ -721,7 +721,10 @@ let weightChart = null;
 
 function toDateKey(date) {
   const d = date || new Date();
-  return d.toISOString().split('T')[0];
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
 }
 function todayKey() { return toDateKey(new Date()); }
 
@@ -784,7 +787,7 @@ function useOffline() {
   localStorage.setItem('pf_offlineMode', '1');
   hideSetup();
   loadFromLocal();
-  if (!checkIns['week-1']) checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
+  if (Object.keys(checkIns).length === 0) checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
   refreshAll();
   showToast('📴 Offline mód', '#f59e0b');
 }
@@ -811,7 +814,7 @@ async function saveConfig() {
     coachingLog = record.coachingLog || {};
     currentWeek = record.currentWeek || getCurrentWeekByDate();
     suppToday   = record.suppToday   || {};
-    if (!checkIns['week-1']) checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
+    if (Object.keys(checkIns).length === 0) checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
     st.style.color='#22c55e'; st.textContent='Připojeno! Načítám data...';
     setTimeout(() => { hideSetup(); refreshAll(); showToast('☁ Synchronizováno', '#22c55e'); }, 800);
   } catch(e) {
@@ -861,7 +864,8 @@ async function loadData() {
   } else {
     loadFromLocal();
   }
-  if (!checkIns['week-1']) {
+  // Seed initial weight if no data at all
+  if (Object.keys(checkIns).length === 0) {
     checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
   }
 }
@@ -887,7 +891,7 @@ async function saveSuppData() {
   localStorage.setItem('pf_suppToday', JSON.stringify(suppToday));
   if (useCloud) {
     try {
-      const payload = { checkIns, currentWeek, suppToday };
+      const payload = { checkIns, coachingLog, currentWeek, suppToday };
       await fetch(`https://api.jsonbin.io/v3/b/${cloudConfig.binId}`, {
         method: 'PUT',
         headers: { 'X-Master-Key': cloudConfig.apiKey, 'Content-Type': 'application/json', 'X-Bin-Versioning': 'false' },
@@ -1071,9 +1075,18 @@ function renderOverview() {
 function renderChart() {
   const labels = PLAN.map(p => `T${p.w}`);
   const planData = PLAN.map(p => p.tg);
+  // Build weekly averages from daily check-ins
+  const weekWeights = {};
+  Object.entries(checkIns).forEach(([k, ci]) => {
+    if (!ci || !ci.weight) return;
+    const wk = getWeekForDate(new Date(k + 'T12:00:00'));
+    if (!weekWeights[wk]) weekWeights[wk] = [];
+    weekWeights[wk].push(parseFloat(ci.weight));
+  });
   const actualData = PLAN.map(p => {
-    const ci = checkIns[`week-${p.w}`];
-    return ci && ci.weight ? parseFloat(ci.weight) : null;
+    const ws = weekWeights[p.w];
+    if (!ws || !ws.length) return null;
+    return parseFloat((ws.reduce((a,b) => a+b, 0) / ws.length).toFixed(1));
   });
 
   if (weightChart) {
@@ -1356,11 +1369,19 @@ function getWeekForDate(date) {
 // ═══════════════════════════════════════
 
 function renderPlan() {
+  // Build weekly averages from daily check-ins
+  const weekWeights = {};
+  Object.entries(checkIns).forEach(([k, ci]) => {
+    if (!ci || !ci.weight) return;
+    const wk = getWeekForDate(new Date(k + 'T12:00:00'));
+    if (!weekWeights[wk]) weekWeights[wk] = [];
+    weekWeights[wk].push(parseFloat(ci.weight));
+  });
   const tbody = document.getElementById('planBody');
   tbody.innerHTML = PLAN.map(p => {
     const isCur = p.w === currentWeek;
-    const ci = checkIns[`week-${p.w}`];
-    const actual = ci?.weight ? parseFloat(ci.weight) : null;
+    const ws = weekWeights[p.w];
+    const actual = ws && ws.length ? parseFloat((ws.reduce((a,b)=>a+b,0)/ws.length).toFixed(1)) : null;
     const diff = actual ? actual - p.tg : null;
     const actualStr = actual
       ? `<span class="${Math.abs(diff) < 0.5 ? 'actual-ok' : diff < 0 ? 'actual-ok' : 'actual-bad'}">${actual.toFixed(1)} <small>${diff >= 0 ? '+' : ''}${diff.toFixed(1)}</small></span>`
