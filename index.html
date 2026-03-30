@@ -1744,21 +1744,24 @@ function refreshAll() {
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (!cloudConfig.apiKey || !cloudConfig.binId) {
-    // Prvotní spuštění nebo offline — nabídni setup
     loadFromLocal();
-    if (!checkIns['week-1']) {
+    if (Object.keys(checkIns).length === 0) {
       checkIns['2026-03-30'] = {weight:'84.4',kcal:'',protein:'',carbs:'',fat:'',sleepTime:'',wakeTime:'',sleepScore:'',energy:7,sleep:7,mt:7,notes:'Start reverzní diety'};
     }
     refreshAll();
-    // Zobraz setup modal pokud není offline mode explicitně zvolen
+    // Vždy vykreslit historii check-inů při startu
+    loadFormForDate();
+    renderHistory();
     if (!localStorage.getItem('pf_offlineMode')) {
       showSetup();
     }
   } else {
     await loadData();
     refreshAll();
+    // Vždy vykreslit historii check-inů při startu
+    loadFormForDate();
+    renderHistory();
   }
-  // Update sync badge
   const sb = document.getElementById('syncBadge');
   if (useCloud) { sb.style.color = 'var(--green)'; sb.title = 'Synchronizováno s JSONBin.io — klikni pro nastavení'; sb.textContent = '☁ Sync'; }
 });
