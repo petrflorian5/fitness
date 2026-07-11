@@ -21,7 +21,7 @@ function corsHeaders(origin) {
   const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Methods': 'GET, PUT, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Max-Age': '86400',
   };
@@ -68,6 +68,37 @@ export default {
         JSON.parse(body); // validace
         await env.TRACKER_KV.put('data', body);
         return json({ ok: true, savedAt: new Date().toISOString() }, 200, cors);
+      }
+
+      // — Progress fotky: seznam —
+      if (url.pathname === '/photos' && request.method === 'GET') {
+        const list = await env.TRACKER_KV.list({ prefix: 'photo:' });
+        const items = list.keys.map(k => ({ id: k.name.slice(6), date: (k.metadata || {}).date || null }));
+        return json(items, 200, cors);
+      }
+
+      // — Progress fotky: stažení / nahrání / smazání —
+      const photoMatch = url.pathname.match(/^\/photo\/([\w.-]+)$/);
+      if (photoMatch) {
+        const key = 'photo:' + photoMatch[1];
+        if (request.method === 'GET') {
+          const val = await env.TRACKER_KV.get(key, 'arrayBuffer');
+          if (!val) return json({ error: 'not found' }, 404, cors);
+          return new Response(val, {
+            status: 200,
+            headers: { 'Content-Type': 'image/jpeg', 'Cache-Control': 'private, max-age=86400', ...cors },
+          });
+        }
+        if (request.method === 'PUT') {
+          const buf = await request.arrayBuffer();
+          if (buf.byteLength > 3_000_000) return json({ error: 'too large (max 3 MB)' }, 413, cors);
+          await env.TRACKER_KV.put(key, buf, { metadata: { date: url.searchParams.get('date') || '' } });
+          return json({ ok: true }, 200, cors);
+        }
+        if (request.method === 'DELETE') {
+          await env.TRACKER_KV.delete(key);
+          return json({ ok: true }, 200, cors);
+        }
       }
 
       // — Chat: proxy na Anthropic Messages API —
