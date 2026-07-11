@@ -992,6 +992,7 @@ KONTEXT PROGRAMU "fitness_2026" (v2 — restart):
 - Letní rozvrh (do 23.8.): Po odpočinek, Út MT 1v1 Tomík (6:00), St silový A, Čt Zone 2, Pá MT sparring (flexibilně — když nevyjde, nahradit Zone 2/kroky), So silový B, Ne mobilita.
 - Sezónní rozvrh (od 31.8.): + fotbalové tréninky přípravky, které Petr vede jako trenér Po/St/Pá večer. Silový A se přesouvá na St ráno 7:00.
 - Silový trénink má 2 varianty: fitko (činky, hrazda) a doma (jednoručky + odporové gumy). Petr si vybírá podle dne.
+- Parametry: 179,5 cm, 36 let, BMR ~1820 kcal, odhad TDEE ~2700–2800 kcal při plném režimu (hodinky ø 550–600 aktivních kcal, kroky ø 9k s cílem 10–12k). Deficit na 2100 kcal ≈ 0,55–0,65 kg/týden.
 - Zdravotní omezení: šetřit lýtko — žádné explozivní odrazy/skoky/běh.
 - Doplňky (dnes odškrtnuto: ${SUPPS.filter(s=>suppToday.checked[s.name]).map(s=>s.name).join(', ')||'nic'}): ${SUPPS.map(s=>s.name+' '+s.dose).join('; ')}. Kofein max do 14:00.
 
@@ -1002,6 +1003,7 @@ PRAVIDLA:
 - Když ti uživatel nadiktuje denní data (váha, kcal, kroky…), VŽDY je ulož nástrojem save_checkin a pak stručně okomentuj progres vůči plánu.
 - Odpovídej stručně (2–6 vět), konkrétně, s čísly. Formátování: max tučné zvýraznění, žádné dlouhé seznamy.
 - Při týdenním vyhodnocení porovnej průměr váhy s cílem týdne, zhodnoť konzistenci check-inů, kalorie a kroky, a dej 1–3 konkrétní doporučení.
+- KALIBRACE: pokles < 0,4 kg/týden 2 týdny po sobě → doporuč −100 kcal nebo +2000 kroků. Pokles > 0,8 kg/týden (mimo T1) → doporuč +100 kcal, chráníme svaly a MT výkon. Vždy vysvětli proč.
 - Nejsi lékař — u zdravotních problémů doporuč odborníka.`;
 }
 
