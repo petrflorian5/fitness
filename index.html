@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Petr Florián — Fitness 2026</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#10b981">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Fitness">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -156,6 +163,17 @@ tr.cur-week td{background:var(--green-bg)}
 .liw-cell.plan{background:var(--gold)}
 @keyframes pulse{50%{opacity:.55}}
 
+/* ── Fotky ── */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.photo-card{position:relative;border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+.photo-card img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.photo-meta{padding:8px 10px;font-size:11px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.photo-del{color:var(--red);font-size:14px;padding:2px 6px;border-radius:6px;flex-shrink:0}
+.photo-del:hover{background:#fef2f2}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.compare img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:12px}
+.compare .lbl2{text-align:center;font-size:11.5px;font-weight:700;color:var(--sec);margin-top:6px}
+
 /* ── Toast & modal ── */
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#fff;padding:12px 22px;border-radius:13px;font-size:13px;font-weight:700;opacity:0;transition:all .3s;z-index:200;pointer-events:none;box-shadow:0 10px 30px rgba(15,23,42,.3);white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -196,6 +214,7 @@ tr.cur-week td{background:var(--green-bg)}
     <div class="tab" data-nav="training" onclick="go('training')">Trénink</div>
     <div class="tab" data-nav="supps" onclick="go('supps')">Doplňky</div>
     <div class="tab" data-nav="analytics" onclick="go('analytics')">Analytika</div>
+    <div class="tab" data-nav="photos" onclick="go('photos')">Fotky</div>
     <div class="tab" data-nav="lifeweeks" onclick="go('lifeweeks')">Týdny</div>
   </nav>
   <div class="top-right">
@@ -243,6 +262,11 @@ tr.cur-week td{background:var(--green-bg)}
       <div class="f-sec">Makra dnes — cíl T<span id="ovMacroWeek">1</span></div>
       <div id="ovMacros"></div>
     </div>
+  </div>
+
+  <div class="card" id="photoHint" style="display:none;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px;border-left:4px solid var(--gold)">
+    <div style="font-size:13px;font-weight:600">📷 <span id="photoHintText">Je čas na progress fotku</span></div>
+    <button class="btn btn-sm" onclick="go('photos')">Vyfotit</button>
   </div>
 
   <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
@@ -414,6 +438,26 @@ tr.cur-week td{background:var(--green-bg)}
     <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--gold);margin-right:5px"></span>plán fitness_2026</span>
   </div></div>
 </section>
+
+<!-- ═══ FOTKY ═══ -->
+<section class="page" id="page-photos">
+  <div class="page-head">
+    <div>
+      <div class="page-title">Progress fotky</div>
+      <div class="page-sub">1× měsíčně · stejné světlo, stejná póza · ukládají se jen v tomto zařízení</div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="document.getElementById('photoFile').click()">📷 Přidat fotku</button>
+  </div>
+  <input type="file" id="photoFile" accept="image/*" style="display:none" onchange="if(this.files[0])addPhoto(this.files[0]);this.value=''">
+  <div class="card" style="margin-bottom:15px" id="photoCompareCard" hidden>
+    <div class="card-title">Porovnání</div><div class="card-sub">První vs. nejnovější</div>
+    <div class="compare" id="photoCompare"></div>
+  </div>
+  <div class="photo-grid" id="photoGrid" style="margin-bottom:15px"></div>
+  <div class="card" id="photoEmpty" style="text-align:center;color:var(--sec);padding:40px 20px">
+    Zatím žádné fotky.<br>Vyfoť první ještě dnes — za pár měsíců si poděkuješ. 📸
+  </div>
+</section>
 </div>
 
 <!-- ═══════════ MOBILE NAV ═══════════ -->
@@ -448,6 +492,7 @@ tr.cur-week td{background:var(--green-bg)}
   <div class="modal" style="max-width:320px">
     <button class="btn" style="width:100%;margin-bottom:8px" onclick="go('plan');document.getElementById('moreModal').classList.remove('show')">≡ Plán výživy</button>
     <button class="btn" style="width:100%;margin-bottom:8px" onclick="go('analytics');document.getElementById('moreModal').classList.remove('show')">◎ Analytika</button>
+    <button class="btn" style="width:100%;margin-bottom:8px" onclick="go('photos');document.getElementById('moreModal').classList.remove('show')">📷 Progress fotky</button>
     <button class="btn" style="width:100%;margin-bottom:8px" onclick="go('lifeweeks');document.getElementById('moreModal').classList.remove('show')">▦ Život v týdnech</button>
     <button class="btn" style="width:100%" onclick="showSettings();document.getElementById('moreModal').classList.remove('show')">⚙ Nastavení</button>
   </div>
@@ -674,6 +719,7 @@ function go(id){
   if(id==='overview') renderOverview();
   if(id==='analytics') renderAnalytics();
   if(id==='lifeweeks') renderLifeWeeks();
+  if(id==='photos') renderPhotos();
   if(id==='chat') setTimeout(()=>{$('chatScroll').scrollTop=$('chatScroll').scrollHeight; $('chatInput').focus();},50);
   window.scrollTo({top:0});
 }
@@ -951,6 +997,73 @@ function renderLifeWeeks(){
   $('liwGrid').innerHTML = html;
 }
 
+// ═══════════════ PROGRESS FOTKY (jen lokálně v tomto zařízení) ═══════════════
+let photoDB=null, photoList=[];
+function openPhotoDB(){
+  return new Promise((res,rej)=>{
+    if(!('indexedDB' in window)) return rej(new Error('no idb'));
+    const rq=indexedDB.open('pf2_photos',1);
+    rq.onupgradeneeded=e=>e.target.result.createObjectStore('photos',{keyPath:'id'});
+    rq.onsuccess=e=>{photoDB=e.target.result;res();};
+    rq.onerror=()=>rej(rq.error);
+  });
+}
+function photosAll(){ return new Promise((res,rej)=>{ const rq=photoDB.transaction('photos').objectStore('photos').getAll(); rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>rej(rq.error); }); }
+function photoPut(rec){ return new Promise((res,rej)=>{ const rq=photoDB.transaction('photos','readwrite').objectStore('photos').put(rec); rq.onsuccess=res; rq.onerror=()=>rej(rq.error); }); }
+function photoDelete(id){
+  if(!confirm('Smazat tuto fotku?')) return;
+  const rq=photoDB.transaction('photos','readwrite').objectStore('photos').delete(id);
+  rq.onsuccess=()=>{ renderPhotos(); toast('Fotka smazána'); };
+}
+async function addPhoto(file){
+  try{
+    let blob=file;
+    try{
+      const img=await createImageBitmap(file);
+      const scale=Math.min(1,1200/Math.max(img.width,img.height));
+      const cv=document.createElement('canvas');
+      cv.width=Math.round(img.width*scale); cv.height=Math.round(img.height*scale);
+      cv.getContext('2d').drawImage(img,0,0,cv.width,cv.height);
+      blob=(await new Promise(r=>cv.toBlob(r,'image/jpeg',0.82)))||file;
+    }catch(e){ /* starší prohlížeč — uložíme originál */ }
+    await photoPut({id:Date.now(), date:todayKey(), blob});
+    await renderPhotos();
+    toast('✓ Fotka uložena (jen v tomto zařízení)');
+  }catch(e){ toast('⚠ Nepodařilo se uložit fotku'); }
+}
+async function renderPhotos(){
+  if(!photoDB) return;
+  photoList=(await photosAll()).sort((a,b)=>a.id-b.id);
+  const grid=$('photoGrid'), empty=$('photoEmpty'), cmpCard=$('photoCompareCard');
+  if(!grid) return;
+  grid.innerHTML='';
+  empty.style.display=photoList.length?'none':'block';
+  photoList.slice().reverse().forEach(p=>{
+    const url=URL.createObjectURL(p.blob);
+    const ci=checkIns[p.date]||{};
+    const div=document.createElement('div');
+    div.className='photo-card';
+    div.innerHTML='<img src="'+url+'" alt="progress"><div class="photo-meta"><span>'+p.date.slice(8,10)+'.'+parseInt(p.date.slice(5,7))+'. '+p.date.slice(0,4)+(ci.weight?' · '+fmtKg(ci.weight)+' kg':'')+'</span><button class="photo-del" onclick="photoDelete('+p.id+')">✕</button></div>';
+    grid.appendChild(div);
+  });
+  if(photoList.length>=2){
+    const a=photoList[0], b=photoList[photoList.length-1];
+    const wa=(checkIns[a.date]||{}).weight, wb=(checkIns[b.date]||{}).weight;
+    cmpCard.hidden=false;
+    $('photoCompare').innerHTML='<div><img src="'+URL.createObjectURL(a.blob)+'"><div class="lbl2">'+a.date+(wa?' · '+fmtKg(wa)+' kg':'')+'</div></div><div><img src="'+URL.createObjectURL(b.blob)+'"><div class="lbl2">'+b.date+(wb?' · '+fmtKg(wb)+' kg':'')+'</div></div>';
+  } else cmpCard.hidden=true;
+  updatePhotoHint();
+}
+function updatePhotoHint(){
+  const hint=$('photoHint'); if(!hint) return;
+  const last=photoList.length?photoList[photoList.length-1].date:null;
+  const days=last?Math.floor((new Date()-new Date(last+'T12:00:00'))/864e5):999;
+  if(days>=28){
+    $('photoHintText').textContent = last?('Poslední progress fotka je '+days+' dní stará — čas na novou'):'Vyfoť startovací progress fotku — za pár měsíců si poděkuješ';
+    hint.style.display='flex';
+  } else hint.style.display='none';
+}
+
 // ═══════════════ CHAT S KOUČEM ═══════════════
 const TOOLS = [
   { name:'save_checkin',
@@ -1148,6 +1261,8 @@ $('ciDate').value = todayKey();
 loadCheckinForm();
 renderAll();
 go('overview');
+openPhotoDB().then(renderPhotos).catch(()=>{});
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
 if(cfg.url && cfg.token){ cloudLoad(); } else { setSync(false); setTimeout(()=>{ if(!localStorage.getItem('pf2_seen')){ showSettings(); localStorage.setItem('pf2_seen','1'); } }, 600); }
 </script>
 </body>
