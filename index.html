@@ -211,7 +211,7 @@ tr.cur-week td{background:var(--green-bg)}
   <div class="page-head">
     <div>
       <div class="page-title" id="ovGreet">Ahoj, Petře 👋</div>
-      <div class="page-sub" id="ovSub">84,4 kg → 75 kg · Start 30. 3. 2026 · 28 týdnů</div>
+      <div class="page-sub" id="ovSub">87,5 kg → 75 kg · Start 13. 7. 2026 · 26 týdnů · milník: pod 80 kg</div>
     </div>
     <button class="btn btn-primary btn-sm" onclick="go('checkin')">✎ Dnešní check-in</button>
   </div>
@@ -229,7 +229,7 @@ tr.cur-week td{background:var(--green-bg)}
       <div style="font-weight:800;font-size:18px;color:var(--green-d)" id="ovPct">0 %</div>
     </div>
     <div class="bar-track"><div class="bar-fill" id="ovBar" style="width:0%"></div></div>
-    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);font-weight:600;margin-top:7px"><span>84,4 kg start</span><span>75 kg cíl</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--dim);font-weight:600;margin-top:7px"><span>87,5 kg start</span><span>75 kg cíl</span></div>
   </div>
 
   <div class="grid g2" style="grid-template-columns:1.4fr 1fr;margin-bottom:15px" id="ovMainGrid">
@@ -275,7 +275,7 @@ tr.cur-week td{background:var(--green-bg)}
     <div class="chat-suggest" id="chatSuggest">
       <button class="sug" onclick="suggest(this)">Jak mi jde tenhle týden?</button>
       <button class="sug" onclick="suggest(this)">Vyhodnoť poslední týden a navrhni úpravy</button>
-      <button class="sug" onclick="suggest(this)">Dnes 84,1 kg, 2100 kcal, 11 000 kroků</button>
+      <button class="sug" onclick="suggest(this)">Dnes 87,1 kg, 2100 kcal, 11 000 kroků</button>
       <button class="sug" onclick="suggest(this)">Co mám dnes trénovat?</button>
     </div>
     <div class="chat-input-row">
@@ -302,7 +302,7 @@ tr.cur-week td{background:var(--green-bg)}
     <div class="card">
       <div class="f-sec" style="margin-top:0">Základ</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-        <div><label class="f-lbl">Ranní váha (kg)</label><input type="number" step="0.1" id="f_weight" placeholder="84.0"></div>
+        <div><label class="f-lbl">Ranní váha (kg)</label><input type="number" step="0.1" id="f_weight" placeholder="87.0"></div>
         <div><label class="f-lbl">Kroky</label><input type="number" id="f_steps" placeholder="10000"></div>
         <div><label class="f-lbl">Příjem kcal</label><input type="number" id="f_kcal" placeholder="2150"></div>
         <div><label class="f-lbl">Spáleno kcal (hodinky)</label><input type="number" id="f_burned" placeholder="2800"></div>
@@ -337,8 +337,8 @@ tr.cur-week td{background:var(--green-bg)}
 <section class="page" id="page-plan">
   <div class="page-head">
     <div>
-      <div class="page-title">28týdenní výživový plán</div>
-      <div class="page-sub" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><span class="chip" style="background:#fff7ed;color:#c2410c">Fáze 1 · Reverzní dieta · T1–8</span> <span class="chip" style="background:var(--green-bg);color:var(--green-d)">Fáze 2 · Kontrolovaný deficit · T9–28</span></div>
+      <div class="page-title">26týdenní výživový plán</div>
+      <div class="page-sub" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px"><span class="chip" style="background:#fff7ed;color:#c2410c">Fáze 1 · Letní deficit · T1–7</span> <span class="chip" style="background:var(--green-bg);color:var(--green-d)">Fáze 2 · Sezónní deficit · T8–26</span> <span class="chip" style="background:#f5f3ff;color:#6d28d9">🏕️ T7 kemp · 🧘 T13 pauza · 🎄 T24 Vánoce</span></div>
     </div>
   </div>
   <div class="card tbl-wrap" style="padding:0">
@@ -456,37 +456,36 @@ tr.cur-week td{background:var(--green-bg)}
 <script>
 'use strict';
 // ═══════════════ DATA PLÁNU ═══════════════
-const PLAN_START = new Date(2026, 2, 30);
-const START_W = 84.4, GOAL_W = 75.0;
+const PLAN_START = new Date(2026, 6, 13);
+const START_W = 87.5, GOAL_W = 75.0;
+const PHASE_NAMES = {1:'Fáze 1 — Letní deficit', 2:'Fáze 2 — Sezónní deficit'};
 const PLAN = [
-  {w:1,d:"30.3–5.4",ph:1,kcal:2150,pr:175,ch:210,fa:70,tg:84.4,note:"Stabilizace metabolismu"},
-  {w:2,d:"6.4–12.4",ph:1,kcal:2150,pr:175,ch:210,fa:70,tg:84.4,note:"Vážit každé ráno"},
-  {w:3,d:"13.4–19.4",ph:1,kcal:2300,pr:178,ch:240,fa:72,tg:85.0,note:"+150 kcal · +30g S"},
-  {w:4,d:"20.4–26.4",ph:1,kcal:2300,pr:178,ch:240,fa:72,tg:85.0,note:"Udržet"},
-  {w:5,d:"27.4–3.5",ph:1,kcal:2450,pr:182,ch:270,fa:73,tg:85.5,note:"+150 kcal"},
-  {w:6,d:"4.5–10.5",ph:1,kcal:2450,pr:182,ch:270,fa:73,tg:85.5,note:"Udržet"},
-  {w:7,d:"11.5–17.5",ph:1,kcal:2650,pr:185,ch:305,fa:75,tg:85.8,note:"+200 kcal"},
-  {w:8,d:"18.5–24.5",ph:1,kcal:2650,pr:185,ch:305,fa:75,tg:85.8,note:"Konec Fáze 1"},
-  {w:9,d:"25.5–31.5",ph:2,kcal:2300,pr:183,ch:245,fa:72,tg:85.5,note:"Start deficitu"},
-  {w:10,d:"1.6–7.6",ph:2,kcal:2300,pr:183,ch:245,fa:72,tg:85.0,note:"−0,3–0,5 kg/týden"},
-  {w:11,d:"8.6–14.6",ph:2,kcal:2250,pr:183,ch:238,fa:70,tg:84.5,note:"Snížit S"},
-  {w:12,d:"15.6–21.6",ph:2,kcal:2250,pr:183,ch:238,fa:70,tg:84.0,note:"Check tracking"},
-  {w:13,d:"22.6–28.6",ph:2,kcal:2200,pr:182,ch:230,fa:70,tg:83.5,note:"S kolem tréninku"},
-  {w:14,d:"29.6–5.7",ph:2,kcal:2200,pr:182,ch:230,fa:70,tg:83.0,note:"Sledovat MT výkon"},
-  {w:15,d:"6.7–12.7",ph:2,kcal:2150,pr:180,ch:222,fa:68,tg:82.5,note:"~80 kg koncem fáze"},
-  {w:16,d:"13.7–19.7",ph:2,kcal:2150,pr:180,ch:222,fa:68,tg:82.0,note:"Monitoring síly"},
-  {w:17,d:"20.7–26.7",ph:2,kcal:2100,pr:180,ch:215,fa:67,tg:81.5,note:"Spánek a regenerace"},
-  {w:18,d:"27.7–2.8",ph:2,kcal:2100,pr:180,ch:215,fa:67,tg:81.0,note:"Carb cycling"},
-  {w:19,d:"3.8–9.8",ph:2,kcal:2050,pr:178,ch:207,fa:65,tg:80.5,note:"Cíl 78 kg"},
-  {w:20,d:"10.8–16.8",ph:2,kcal:2050,pr:178,ch:207,fa:65,tg:80.0,note:"Vyhodnocení"},
-  {w:21,d:"17.8–23.8",ph:2,kcal:2000,pr:178,ch:198,fa:63,tg:79.5,note:"Cíl 77 kg"},
-  {w:22,d:"24.8–30.8",ph:2,kcal:2000,pr:178,ch:198,fa:63,tg:79.0,note:"Refeed každé úterý"},
-  {w:23,d:"31.8–6.9",ph:2,kcal:1980,pr:178,ch:193,fa:63,tg:78.5,note:"Nesmí ovlivnit MT"},
-  {w:24,d:"7.9–13.9",ph:2,kcal:1980,pr:178,ch:193,fa:63,tg:78.0,note:"Cíl 76 kg"},
-  {w:25,d:"14.9–20.9",ph:2,kcal:1950,pr:175,ch:188,fa:62,tg:77.5,note:"Klíčový týden"},
-  {w:26,d:"21.9–27.9",ph:2,kcal:1950,pr:175,ch:188,fa:62,tg:77.0,note:"Cíl 75 kg"},
-  {w:27,d:"28.9–4.10",ph:2,kcal:1920,pr:175,ch:183,fa:61,tg:76.0,note:"Peak progress"},
-  {w:28,d:"5.10–11.10",ph:2,kcal:1920,pr:175,ch:183,fa:61,tg:75.0,note:"🎯 CÍL DOSAŽEN!"},
+  {w:1,d:"13.7–19.7",ph:1,kcal:2300,pr:178,ch:240,fa:70,tg:86.7,note:"Nástup — hodně vody, čekej rychlý pokles"},
+  {w:2,d:"20.7–26.7",ph:1,kcal:2100,pr:178,ch:200,fa:65,tg:86.1,note:"Plný deficit −0,6/týden"},
+  {w:3,d:"27.7–2.8",ph:1,kcal:2100,pr:178,ch:200,fa:65,tg:85.5,note:"Vážit každé ráno"},
+  {w:4,d:"3.8–9.8",ph:1,kcal:2050,pr:178,ch:192,fa:63,tg:84.9,note:"Sacharidy kolem tréninku"},
+  {w:5,d:"10.8–16.8",ph:1,kcal:2050,pr:178,ch:192,fa:63,tg:84.3,note:"Sledovat MT výkon"},
+  {w:6,d:"17.8–23.8",ph:1,kcal:2050,pr:178,ch:192,fa:63,tg:83.7,note:"Příprava na kemp"},
+  {w:7,d:"24.8–30.8",ph:1,kcal:2400,pr:178,ch:260,fa:72,tg:83.3,note:"🏕️ KEMP — celodenní aktivita, jez víc!"},
+  {w:8,d:"31.8–6.9",ph:2,kcal:2050,pr:178,ch:192,fa:63,tg:82.9,note:"Start sezóny — fotbal Po/St/Pá"},
+  {w:9,d:"7.9–13.9",ph:2,kcal:2050,pr:178,ch:192,fa:63,tg:82.4,note:"Zvyknout si na nový režim"},
+  {w:10,d:"14.9–20.9",ph:2,kcal:2000,pr:175,ch:185,fa:62,tg:81.9,note:"−0,5/týden"},
+  {w:11,d:"21.9–27.9",ph:2,kcal:2000,pr:175,ch:185,fa:62,tg:81.4,note:"Konzistence check-inů"},
+  {w:12,d:"28.9–4.10",ph:2,kcal:2000,pr:175,ch:185,fa:62,tg:80.9,note:"Blíží se osmdesátka"},
+  {w:13,d:"5.10–11.10",ph:2,kcal:2350,pr:175,ch:240,fa:70,tg:80.7,note:"🧘 Dietní pauza — doplnit síly"},
+  {w:14,d:"12.10–18.10",ph:2,kcal:2000,pr:175,ch:185,fa:62,tg:80.2,note:"Zpátky do deficitu"},
+  {w:15,d:"19.10–25.10",ph:2,kcal:2000,pr:175,ch:185,fa:62,tg:79.7,note:"🎯 MILNÍK: POD 80 KG!"},
+  {w:16,d:"26.10–1.11",ph:2,kcal:1950,pr:175,ch:178,fa:60,tg:79.25,note:"Nová dekáda, jedeme dál"},
+  {w:17,d:"2.11–8.11",ph:2,kcal:1950,pr:175,ch:178,fa:60,tg:78.8,note:"Sledovat sílu a spánek"},
+  {w:18,d:"9.11–15.11",ph:2,kcal:1950,pr:175,ch:178,fa:60,tg:78.35,note:"−0,45/týden"},
+  {w:19,d:"16.11–22.11",ph:2,kcal:1950,pr:175,ch:178,fa:60,tg:77.9,note:"Refeed při stagnaci"},
+  {w:20,d:"23.11–29.11",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:77.45,note:"Poslední snížení kcal"},
+  {w:21,d:"30.11–6.12",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:77.0,note:"Mikuláš — jedna odměna se počítá"},
+  {w:22,d:"7.12–13.12",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:76.55,note:"Držet i přes adventní shon"},
+  {w:23,d:"14.12–20.12",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:76.1,note:"Před Vánoci pod 76,5"},
+  {w:24,d:"21.12–27.12",ph:2,kcal:2300,pr:172,ch:235,fa:70,tg:76.0,note:"🎄 VÁNOCE — udržovací týden, užij si to"},
+  {w:25,d:"28.12–3.1",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:75.5,note:"Novoroční finiš — část 1"},
+  {w:26,d:"4.1–10.1",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:75.0,note:"🎯 CÍL 75 KG DOSAŽEN!"},
 ];
 const SUPPS = [
   {name:"Whey protein",dose:"25–40 g",timing:"Po tréninku",tier:"A"},
@@ -505,40 +504,97 @@ const TIMING = [
   {time:"Večer",color:"#8b5cf6",items:["Mg bisglycinate 225 mg (30 min před spaním)","Zinek 15–25 mg s jídlem"]},
 ];
 const DAYS_CZ = ['Ne','Po','Út','St','Čt','Pá','So'];
-const DAILY = {
-  1:{name:'Pondělí',icon:'😴',title:'Aktivní odpočinek',color:'#64748b',
-    items:[{t:'Aktivita',c:'#64748b',lines:['Chůze 10 000+ kroků','Lehké protažení dle potřeby','Žádný intenzivní trénink']},
-           {t:'Regenerace',c:'#8b5cf6',lines:['Cíl spánek 7:30+','Hydratace 2,5–3 l','Připravit pre-workout jídlo na zítřek']},
-           {t:'Nutrition tip',c:'#f59e0b',lines:['Večer +30 g sacharidů nad základ — příprava glykogenu na MT úterý ráno']}]},
-  2:{name:'Úterý',icon:'🥊',title:'MT 1v1 Tomík 6:00 + Coaching U8',color:'#f59e0b',
-    items:[{t:'Před tréninkem',c:'#f59e0b',lines:['Max banán / rýžové chlebíčky 30 min před','Kofein 250–400 mg 45 min před (pokud reálné)','Pít hned po probuzení']},
-           {t:'Focus',c:'#ef4444',lines:['Technika na lapách dle Tomíka','Výbušnost kombinací','Footwork a poziční trénink']},
-           {t:'Po tréninku',c:'#10b981',lines:['Whey + sacharidy do 30 min','Refeed den: +40–50 g sacharidů nad základ','Coaching odpoledne: šetři energii']}]},
-  3:{name:'Středa',icon:'🏋️',title:'Silový trénink 7:00',color:'#10b981',
-    warmup:['Hip 90/90 (2×30 s/stranu)','Band pull-apart (2×15)','Goblet squat BW (2×10)','Thoracic rotation (2×8/stranu)'],
-    ex:[{n:'A1 — Front squat',d:'4 × 4–5 · ~75–80 % 1RM · pauza 3–4 min',tip:'Kopací síla a hip drive. Záda rovná, lokty vysoko, core stažený.',c:'#10b981'},
-        {n:'A2 — Romanian deadlift',d:'4 × 5 · ~75 % 1RM · pauza 3 min',tip:'Zadní řetěz — hamstringy pro výbušné kopy. Excentrika 3 s dolů.',c:'#10b981'},
-        {n:'B1 — Weighted pull-up / Barbell row',d:'4 × 4–5 · BW+závaží · pauza 3 min',tip:'Clinch síla a záda. Nejde plný pull-up? → barbell/cable row.',c:'#3b82f6'},
-        {n:'B2 — Overhead press',d:'3 × 5–6 · ~70 % 1RM · pauza 2–3 min',tip:'Ramenní pás — přímý úder. Core stažený, žádná hyperextenze beder.',c:'#3b82f6'},
-        {n:'C1 — Pallof press',d:'3 × 10/stranu · pauza 90 s',tip:'Anti-rotační core — stabilita při kopech a úderech.',c:'#8b5cf6'},
-        {n:'C2 — Ab wheel rollout',d:'3 × 8–10 · pomalé tempo',tip:'Přední core. Nepropadat v bedrech.',c:'#8b5cf6'},
-        {n:'C3 — Hanging knee raise',d:'3 × 12–15 · kontrolované',tip:'Flexory kyčle — výška a rychlost kopu.',c:'#8b5cf6'}],
-    items:[{t:'Progrese',c:'#f59e0b',lines:['+2,5 kg jakmile zvládneš všechny série čistě','Compound lifts vždy první, core na konec','Lýtko bolí? Front squat → goblet squat / leg press']}]},
-  4:{name:'Čtvrtek',icon:'⚽',title:'Coaching U8 + Zone 2 (20–25 min)',color:'#8b5cf6',
-    items:[{t:'Zone 2',c:'#06b6d4',lines:['Po coachingu, 30 min po jídle','Rotoped / rowing — 130–150 BPM','Talk test: plynulé věty ANO, zpívat NE','Polar H9 pro přesnost']},
-           {t:'Coaching',c:'#8b5cf6',lines:['Šetři energii, sleduj hráče aktivně','Regenerační den — žádná vysoká intenzita']}]},
-  5:{name:'Pátek',icon:'🥊',title:'MT Sparring 7:00 + Coaching U8',color:'#ef4444',
-    items:[{t:'Před sparringem',c:'#f59e0b',lines:['Lehčí večeře ve čtvrtek','Ráno jen banán / rýžové chlebíčky','Polar H9 na hrudník před začátkem']},
-           {t:'Focus',c:'#ef4444',lines:['Technika > síla — kvalitní sparring','Lýtko: upozorni Tomíka, žádné explozivní odrazy','Footwork, obrany, kontrování']},
-           {t:'Po sparringu',c:'#10b981',lines:['Whey okamžitě po','Led na kontaktní místa dle potřeby','Zhodnotit: co fungovalo / co zlepšit']}]},
-  6:{name:'Sobota',icon:'🚴',title:'Zone 2 — 30–35 min',color:'#06b6d4',
-    items:[{t:'Hlavní aerobní session',c:'#06b6d4',lines:['Rotoped / rowing 30–35 min · 130–150 BPM','Postupně prodlužuj: cíl 40–45 min','Talk test celou dobu','Odpoledne: rodina, odpočinek']}]},
-  0:{name:'Neděle',icon:'🧘',title:'Mobilita — 25–30 min',color:'#8b5cf6',
-    items:[{t:'Kyčle (10 min)',c:'#10b981',lines:['Hip 90/90 — 3×60 s/stranu','Pigeon pose — 2×90 s/stranu','Couch stretch (psoas) — 2×60 s/stranu']},
-           {t:'Hrudní páteř (8 min)',c:'#3b82f6',lines:['Foam roller extension — 10× přes válec','Thoracic rotation na čtyřech — 2×10/stranu']},
-           {t:'Ramena + Lat (7 min)',c:'#8b5cf6',lines:['Band shoulder stretch — 2×60 s/stranu','Lat stretch u rámu — 2×45 s/stranu']},
-           {t:'Cool-down',c:'#06b6d4',lines:['Diafragmatické dýchání 5 min','Mentální reset — plán na nový týden']}]},
+
+// ── Silové tréninky: varianty fitko / doma (jednoručky + gumy) ──
+const GYM_A = {
+  fitko:[
+    {n:'A1 — Front squat',d:'4 × 4–5 · ~75–80 % 1RM · pauza 3–4 min',tip:'Kopací síla a hip drive. Záda rovná, lokty vysoko, core stažený.',c:'#10b981'},
+    {n:'A2 — Romanian deadlift',d:'4 × 5 · ~75 % 1RM · pauza 3 min',tip:'Zadní řetěz — hamstringy pro výbušné kopy. Excentrika 3 s dolů.',c:'#10b981'},
+    {n:'B — Overhead press',d:'3 × 5–6 · ~70 % 1RM · pauza 2–3 min',tip:'Ramenní pás — přímý úder. Core stažený, žádná hyperextenze beder.',c:'#3b82f6'},
+    {n:'C1 — Pallof press',d:'3 × 10/stranu · pauza 90 s',tip:'Anti-rotační core — stabilita při kopech a úderech.',c:'#8b5cf6'},
+    {n:'C2 — Ab wheel rollout',d:'3 × 8–10 · pomalé tempo',tip:'Přední core. Nepropadat v bedrech.',c:'#8b5cf6'},
+    {n:'C3 — Hanging knee raise',d:'3 × 12–15 · kontrolované',tip:'Flexory kyčle — výška a rychlost kopu.',c:'#8b5cf6'}],
+  doma:[
+    {n:'A1 — Goblet squat (jednoručka)',d:'4 × 8–10 · nejtěžší jednoručka · pauza 2–3 min',tip:'Kopací síla. Pomalu dolů (3 s), explozivně nahoru.',c:'#10b981'},
+    {n:'A2 — DB Romanian deadlift',d:'4 × 8–10 · obě jednoručky',tip:'Hamstringy. Rovná záda, kyčle dozadu, cítit protažení.',c:'#10b981'},
+    {n:'A3 — Bulgarian split squat',d:'3 × 8/nohu · jednoručky v rukou',tip:'Unilaterální síla — přenos do kopů a stability.',c:'#10b981'},
+    {n:'B — DB overhead press',d:'3 × 8–10 · ve stoje',tip:'Ramena + core. Bez záklonu.',c:'#3b82f6'},
+    {n:'C1 — Pallof press s gumou',d:'3 × 10/stranu · guma o rám dveří',tip:'Anti-rotační core.',c:'#8b5cf6'},
+    {n:'C2 — Plank → mountain climbers',d:'3 × (40 s + 20 s)',tip:'Core + kondice na závěr.',c:'#8b5cf6'}],
 };
+const GYM_B = {
+  fitko:[
+    {n:'A1 — Weighted pull-up',d:'4 × 4–5 · BW+závaží · pauza 3 min',tip:'Clinch síla a záda. Nejde? → lat pulldown / cable row.',c:'#3b82f6'},
+    {n:'A2 — Barbell row',d:'4 × 6 · pauza 2–3 min',tip:'Hrubá síla zad — přítahy v clinchi.',c:'#3b82f6'},
+    {n:'B1 — Incline DB press',d:'3 × 8 · pauza 2 min',tip:'Tlaková síla — přímé údery.',c:'#f97316'},
+    {n:'B2 — Face pull',d:'3 × 12–15',tip:'Zadní delty + rotátory — zdraví ramen při sparringu.',c:'#f97316'},
+    {n:'C1 — Farmer\'s carry',d:'3 × 30–40 m · těžké',tip:'Grip + trapézy + core. MT staple.',c:'#8b5cf6'},
+    {n:'C2 — Hanging leg raise',d:'3 × 10–12',tip:'Spodní core + flexory kyčle.',c:'#8b5cf6'}],
+  doma:[
+    {n:'A1 — DB row (přítah v předklonu)',d:'4 × 8/stranu · nejtěžší jednoručka',tip:'Síla zad — opora o lavici/koleno, rovná záda.',c:'#3b82f6'},
+    {n:'A2 — Band pull-apart',d:'3 × 15–20',tip:'Zadní delty, protiváha úderů.',c:'#3b82f6'},
+    {n:'B1 — DB floor press',d:'3 × 10 · na zemi',tip:'Tlak — přímé údery. Kontrolovaná excentrika.',c:'#f97316'},
+    {n:'B2 — Band face pull',d:'3 × 15 · guma o rám',tip:'Zdraví ramen.',c:'#f97316'},
+    {n:'C1 — Suitcase carry',d:'3 × 40 kroků/stranu · jednoručka',tip:'Anti-lateral core — stabilita v postoji.',c:'#8b5cf6'},
+    {n:'C2 — V-sit / leg raises na zemi',d:'3 × 12–15',tip:'Spodní core.',c:'#8b5cf6'}],
+};
+const WARMUP = ['Hip 90/90 (2×30 s/stranu)','Band pull-apart (2×15)','Goblet/BW squat (2×10)','Thoracic rotation (2×8/stranu)'];
+const PROG_TIPS = {t:'Progrese',c:'#f59e0b',lines:['Přidej zátěž/opakování, jakmile zvládneš všechny série čistě','Compound cviky první, core na konec','Lýtko šetřit — žádné skoky a explozivní odrazy']};
+
+// ── Tři režimy rozvrhu podle období ──
+const SEASON_START = new Date(2026,7,31);   // 31.8.2026 — fotbal Po/St/Pá
+const CAMP_START = new Date(2026,7,24), CAMP_END = new Date(2026,7,31); // kemp 24.–30.8.
+const REST_DAY = {name:'Pondělí',icon:'😴',title:'Aktivní odpočinek',color:'#64748b',
+  items:[{t:'Aktivita',c:'#64748b',lines:['Chůze 10 000+ kroků','Lehké protažení dle potřeby','Žádný intenzivní trénink']},
+         {t:'Regenerace',c:'#8b5cf6',lines:['Cíl spánek 7:30+','Hydratace 2,5–3 l','Večer +30 g sacharidů — glykogen na ranní MT']}]};
+const MT_DAY = {name:'Úterý',icon:'🥊',title:'MT 1v1 Tomík — 6:00',color:'#f59e0b',
+  items:[{t:'Před tréninkem',c:'#f59e0b',lines:['Max banán / rýžové chlebíčky 30 min před','Pít hned po probuzení']},
+         {t:'Focus',c:'#ef4444',lines:['Technika na lapách dle Tomíka','Výbušnost kombinací','Footwork a poziční trénink']},
+         {t:'Po tréninku',c:'#10b981',lines:['Whey + sacharidy do 30 min','Dnes vyšší sacharidy — přesuň si je z jiných dní']}]};
+const Z2_DAY = {name:'Čtvrtek',icon:'🚴',title:'Zone 2 — 25–30 min',color:'#06b6d4',
+  items:[{t:'Zone 2',c:'#06b6d4',lines:['Rotoped / rowing — 130–150 BPM','Talk test: plynulé věty ANO, zpívat NE','Polar H9 pro přesnost','Lýtko šetřit — žádný běh']}]};
+const SPAR_DAY = {name:'Pátek',icon:'🥊',title:'MT Sparring — 7:00 (flexibilně)',color:'#ef4444',
+  items:[{t:'Když sparring vyjde',c:'#ef4444',lines:['Lehčí večeře ve čtvrtek, ráno jen banán','Technika > síla, kontrolovaná intenzita','Whey okamžitě po']},
+         {t:'Když sparring nevyjde',c:'#06b6d4',lines:['Nahraď: Zone 2 25 min nebo 12k+ kroků','Žádné výčitky — priorita je konzistence přes týden']}]};
+const MOB_DAY = {name:'Neděle',icon:'🧘',title:'Mobilita — 25–30 min',color:'#8b5cf6',
+  items:[{t:'Kyčle (10 min)',c:'#10b981',lines:['Hip 90/90 — 3×60 s/stranu','Pigeon pose — 2×90 s/stranu','Couch stretch (psoas) — 2×60 s/stranu']},
+         {t:'Hrudní páteř (8 min)',c:'#3b82f6',lines:['Foam roller extension — 10×','Thoracic rotation — 2×10/stranu']},
+         {t:'Ramena + cool-down',c:'#8b5cf6',lines:['Band shoulder stretch — 2×60 s/stranu','Diafragmatické dýchání 5 min','Plán na nový týden']}]};
+function gymDay(name, variant, extraTitle){
+  return {name, icon:'🏋️', title:'Silový '+(variant===GYM_A?'A':'B')+(extraTitle||''), color:'#10b981', gym:true, warmup:WARMUP, exFitko:variant.fitko, exDoma:variant.doma, items:[PROG_TIPS]};
+}
+const SCHEDULES = {
+  summer:{ label:'☀️ Letní režim (do 23. 8.)', days:{
+    1:REST_DAY, 2:MT_DAY, 3:gymDay('Středa',GYM_A), 4:Z2_DAY, 5:SPAR_DAY, 6:gymDay('Sobota',GYM_B), 0:MOB_DAY }},
+  camp:{ label:'🏕️ Kemp (24.–30. 8.)', days:(()=>{
+    const campDay = n=>({name:n,icon:'🏕️',title:'Fotbalový kemp — celý den',color:'#f97316',
+      items:[{t:'Celodenní vedení kempu',c:'#f97316',lines:['Počítej 15 000+ kroků — velký výdej','Vlastní trénink tento týden neřeš','Kcal navýšeny na 2400 — jez pravidelně']},
+             {t:'Priority',c:'#10b981',lines:['Bílkoviny min. 170 g — klidně shake mezi bloky','Hydratace 3 l+ (celý den venku)','Večer 10 min strečink + brzy spát']}]});
+    return {1:campDay('Pondělí'),2:campDay('Úterý'),3:campDay('Středa'),4:campDay('Čtvrtek'),5:campDay('Pátek'),
+      6:{name:'Sobota',icon:'😴',title:'Regenerace po kempu',color:'#64748b',items:[{t:'Odpočinek',c:'#64748b',lines:['Volný den — kemp skončil','Lehká procházka, protažení','Příprava na sezónní režim od pondělí']}]},
+      0:MOB_DAY};
+  })()},
+  season:{ label:'⚽ Sezónní režim (od 31. 8.) — fotbal Po/St/Pá', days:{
+    1:{name:'Pondělí',icon:'⚽',title:'Fotbal — trénink přípravky (večer)',color:'#8b5cf6',
+      items:[{t:'Coaching',c:'#8b5cf6',lines:['Šetři energii — jsi trenér, ne hráč','Počítá se jako lehká aktivita + kroky']},
+             {t:'Regenerace',c:'#64748b',lines:['Jinak odpočinkový den','Večer +30 g sacharidů — ranní MT zítra']}]},
+    2:MT_DAY,
+    3:gymDay('Středa',GYM_A,' — ráno 7:00 (večer fotbal)'),
+    4:Z2_DAY,
+    5:{name:'Pátek',icon:'🥊',title:'Sparring 7:00 (flex.) + fotbal večer',color:'#ef4444',
+      items:[{t:'Když sparring vyjde',c:'#ef4444',lines:['Technika > síla, kontrolovaná intenzita','Whey okamžitě po','Večer fotbal: šetři se, náročný den']},
+             {t:'Když sparring nevyjde',c:'#06b6d4',lines:['Nahraď: Zone 2 25 min ráno, nebo nech volno','Fotbal večer zůstává']}]},
+    6:gymDay('Sobota',GYM_B),
+    0:MOB_DAY }},
+};
+function getSchedule(d){
+  d = d || new Date();
+  if(d >= CAMP_START && d < CAMP_END) return SCHEDULES.camp;
+  if(d >= SEASON_START) return SCHEDULES.season;
+  return SCHEDULES.summer;
+}
+function getDaily(d){ d = d||new Date(); return getSchedule(d).days[d.getDay()]; }
+let gymMode = localStorage.getItem('pf2_gymMode') || 'fitko';
 
 // ═══════════════ STATE & STORAGE ═══════════════
 let checkIns = {}, suppToday = {date:'',checked:{}}, chatHistory = [];
@@ -553,12 +609,12 @@ function setSync(ok,msg){ online=ok; $('syncDot').className='sync-dot '+(ok?'syn
 
 function currentWeek(){
   const diff = Math.floor((new Date() - PLAN_START)/86400000);
-  return Math.min(Math.max(Math.floor(diff/7)+1,1),28);
+  return Math.min(Math.max(Math.floor(diff/7)+1,1),PLAN.length);
 }
 function weekOfDate(key){
   const d = new Date(key+'T12:00:00');
   const diff = Math.floor((d - PLAN_START)/86400000);
-  return Math.min(Math.max(Math.floor(diff/7)+1,1),28);
+  return Math.min(Math.max(Math.floor(diff/7)+1,1),PLAN.length);
 }
 function latestWeight(){
   const keys = Object.keys(checkIns).sort().reverse();
@@ -675,19 +731,20 @@ function renderOverview(){
   $('ovStreakSub').textContent = streak>=7 ? '🔥 jen tak dál!' : 'zapisuj každé ráno';
 
   // fáze + progress
-  $('ovPhaseName').textContent = plan.ph===1?'Fáze 1 — Reverzní dieta':'Fáze 2 — Kontrolovaný deficit';
-  $('ovPhaseWeeks').textContent = 'Týden '+cw+' z 28 · '+plan.d+' · cíl týdne '+fmtKg(plan.tg)+' kg';
+  $('ovPhaseName').textContent = PHASE_NAMES[plan.ph];
+  $('ovPhaseWeeks').textContent = 'Týden '+cw+' z '+PLAN.length+' · '+plan.d+' · cíl týdne '+fmtKg(plan.tg)+' kg';
   const pct = lw ? Math.min(Math.max((START_W-lw.w)/(START_W-GOAL_W)*100,0),100) : 0;
   $('ovPct').textContent = Math.round(pct)+' %';
   $('ovBar').style.width = pct+'%';
 
   // dnešní plán
-  const day = DAILY[new Date().getDay()];
+  const day = getDaily();
   $('ovTodayTitle').textContent = day.icon+' '+day.name+' — '+day.title;
   $('ovTodaySub').textContent = 'T'+cw+' · '+plan.kcal+' kcal · B '+plan.pr+' / S '+plan.ch+' / T '+plan.fa;
   let html='';
-  (day.ex||[]).slice(0,4).forEach(e=>{ html+='<div class="tip-li">'+e.n+' — '+e.d.split('·')[0]+'</div>'; });
-  if(!day.ex) (day.items||[]).slice(0,2).forEach(s=>{ s.lines.slice(0,2).forEach(l=>{ html+='<div class="tip-li">'+l+'</div>'; }); });
+  const ex = day.gym ? (gymMode==='doma'?day.exDoma:day.exFitko) : null;
+  (ex||[]).slice(0,4).forEach(e=>{ html+='<div class="tip-li">'+e.n+' — '+e.d.split('·')[0]+'</div>'; });
+  if(!ex) (day.items||[]).slice(0,2).forEach(s=>{ s.lines.slice(0,2).forEach(l=>{ html+='<div class="tip-li">'+l+'</div>'; }); });
   $('ovToday').innerHTML = html || '<div class="tip-li">Odpočinek</div>';
 
   // makra dnes
@@ -718,7 +775,7 @@ function renderWeightChart(){
     {label:'Plán',data:planData,borderColor:'#cbd5e1',borderDash:[6,5],pointRadius:0,borderWidth:2,tension:.3},
     {label:'Skutečnost',data:actual,borderColor:'#10b981',backgroundColor:'#10b98122',pointRadius:3,pointBackgroundColor:'#10b981',borderWidth:3,tension:.3,spanGaps:true,fill:true},
     {label:'Cíl',data:labels.map(()=>GOAL_W),borderColor:'#ef444455',borderDash:[3,4],pointRadius:0,borderWidth:1.5},
-  ]},options:chartOpts({ymin:73,ymax:87})});
+  ]},options:chartOpts({ymin:74,ymax:89})});
 }
 function chartOpts(o={}){
   return {responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
@@ -778,22 +835,29 @@ function renderPlan(){
 // ═══════════════ TRÉNINK ═══════════════
 let trSel = new Date().getDay();
 function renderTrainingDays(){
-  const order=[1,2,3,4,5,6,0];
+  const order=[1,2,3,4,5,6,0], sched = getSchedule();
   $('trDays').innerHTML = order.map(d=>{
-    const day=DAILY[d];
+    const day=sched.days[d];
     return '<div class="day-pill '+(d===trSel?'sel':'')+'" onclick="trSel='+d+';renderTrainingDays()"><span class="di">'+day.icon+'</span><span class="dn">'+DAYS_CZ[d]+'</span></div>';
   }).join('');
   renderTrainingDetail();
 }
 function trSelectToday(){ trSel = new Date().getDay(); renderTrainingDays(); }
+function setGymMode(m){ gymMode = m; localStorage.setItem('pf2_gymMode', m); renderTrainingDetail(); }
 function renderTrainingDetail(){
-  const day = DAILY[trSel];
-  let html = '<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:30px">'+day.icon+'</span><div><div class="card-title" style="font-size:16px;margin:0">'+day.name+' — '+day.title+'</div>'+(trSel===new Date().getDay()?'<span class="chip" style="background:var(--green-bg);color:var(--green-d);margin-top:4px">Dnes</span>':'')+'</div></div></div>';
+  const sched = getSchedule(), day = sched.days[trSel];
+  let html = '<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><span style="font-size:30px">'+day.icon+'</span><div style="flex:1"><div class="card-title" style="font-size:16px;margin:0">'+day.name+' — '+day.title+'</div><div class="card-sub" style="margin:2px 0 0">'+sched.label+'</div></div>'+(trSel===new Date().getDay()?'<span class="chip" style="background:var(--green-bg);color:var(--green-d)">Dnes</span>':'')+'</div></div>';
+  if(day.gym){
+    html += '<div style="display:flex;gap:8px;margin-bottom:14px">'
+      +'<button class="btn btn-sm'+(gymMode==='fitko'?' btn-primary':'')+'" onclick="setGymMode(\'fitko\')">🏋️ Ve fitku</button>'
+      +'<button class="btn btn-sm'+(gymMode==='doma'?' btn-primary':'')+'" onclick="setGymMode(\'doma\')">🏠 Doma (jednoručky + gumy)</button></div>';
+  }
   if(day.warmup){
     html += '<div class="card" style="margin-bottom:14px"><div class="card-title">Zahřátí</div><div class="card-sub">~10 minut</div>'+day.warmup.map(w=>'<div class="tip-li">'+w+'</div>').join('')+'</div>';
   }
-  if(day.ex){
-    html += '<div class="card" style="margin-bottom:14px"><div class="card-title">Cviky</div><div class="card-sub">Pořadí: A → B → C</div>'+day.ex.map(e=>'<div class="ex-item"><div class="ex-dot" style="background:'+e.c+'"></div><div><div class="ex-name">'+e.n+'</div><div class="ex-detail">'+e.d+'</div><div class="ex-tip">'+e.tip+'</div></div></div>').join('')+'</div>';
+  const ex = day.gym ? (gymMode==='doma'?day.exDoma:day.exFitko) : day.ex;
+  if(ex){
+    html += '<div class="card" style="margin-bottom:14px"><div class="card-title">Cviky — '+(gymMode==='doma'?'doma':'fitko')+'</div><div class="card-sub">Pořadí: A → B → C</div>'+ex.map(e=>'<div class="ex-item"><div class="ex-dot" style="background:'+e.c+'"></div><div><div class="ex-name">'+e.n+'</div><div class="ex-detail">'+e.d+'</div><div class="ex-tip">'+e.tip+'</div></div></div>').join('')+'</div>';
   }
   (day.items||[]).forEach(s=>{
     html += '<div class="card" style="margin-bottom:14px"><div class="card-title" style="color:'+s.c+'">'+s.t+'</div>'+s.lines.map(l=>'<div class="tip-li">'+l+'</div>').join('')+'</div>';
@@ -880,7 +944,7 @@ function renderLifeWeeks(){
     let cls='liw-cell';
     if(i<lived) cls+=' past';
     if(i===lived) cls+=' now';
-    if(i>=planStartW && i<planStartW+28 && i>lived) cls+=' plan';
+    if(i>=planStartW && i<planStartW+PLAN.length && i>lived) cls+=' plan';
     html+='<div class="'+cls+'"></div>';
   }
   $('liwGrid').innerHTML = html;
@@ -913,17 +977,22 @@ function buildSystem(){
     const c = checkIns[k];
     return k+' (T'+weekOfDate(k)+'): '+Object.entries(c).map(([f,v])=>f+'='+v).join(', ');
   }).join('\n') || '(zatím žádné check-iny)';
-  const day = DAILY[new Date().getDay()];
+  const day = getDaily();
+  const sched = getSchedule();
   const lw = latestWeight();
   return `Jsi osobní fitness kouč Petra Floriána (nar. 2.12.1989). Komunikuješ česky, přátelsky, stručně a věcně — jako zkušený trenér, ne jako encyklopedie. Tykáš.
 
-KONTEXT PROGRAMU "fitness_2026":
-- Cíl: z 84,4 kg na 75,0 kg za 28 týdnů. Start 30.3.2026, konec 11.10.2026.
-- Fáze 1 (T1–8): reverzní dieta 2150→2650 kcal. Fáze 2 (T9–28): kontrolovaný deficit ~2300→1920 kcal, tempo −0,3 až −0,5 kg/týden.
-- Dnes: ${todayKey()}, týden T${cw}, fáze ${plan.ph}. Týdenní cíl: ${plan.kcal} kcal, B ${plan.pr} g / S ${plan.ch} g / T ${plan.fa} g, cílová váha ${plan.tg} kg. Poznámka plánu: ${plan.note}.
+KONTEXT PROGRAMU "fitness_2026" (v2 — restart):
+- Cíl: z 87,5 kg na 75,0 kg za 26 týdnů. Start 13.7.2026, konec 10.1.2027. První velký milník: POD 80 KG (plánovaně T15, ~25.10.).
+- Fáze 1 (T1–7, léto): nástup 2300 kcal, pak deficit 2100→2050, tempo −0,6 kg/týden. T7 (24.–30.8.) = fotbalový KEMP, který Petr vede — celodenní aktivita, kcal navýšeny na 2400.
+- Fáze 2 (T8–26, sezóna od 31.8.): deficit 2050→1900 kcal, tempo −0,45 až −0,5 kg/týden. T13 = dietní pauza (2350). T24 = Vánoce, udržovací (2300). Konec: 75,0 kg v T26.
+- Dnes: ${todayKey()}, týden T${cw}, ${PHASE_NAMES[plan.ph]}. Týdenní cíl: ${plan.kcal} kcal, B ${plan.pr} g / S ${plan.ch} g / T ${plan.fa} g, cílová váha ${plan.tg} kg. Poznámka plánu: ${plan.note}.
 - Aktuální váha: ${lw?lw.w+' kg ('+lw.date+')':'neznámá'}.
-- Trénink: Út MT 1v1 (6:00) + coaching U8, St silový trénink (7:00), Čt coaching + Zone 2, Pá MT sparring (7:00) + coaching, So Zone 2 30–35 min, Ne mobilita, Po odpočinek. Dnes je ${day.name}: ${day.title}.
-- Zdravotní omezení: šetřit lýtko — žádné explozivní odrazy/skoky.
+- Aktuální režim: ${sched.label}. Dnes je ${day.name}: ${day.title}.
+- Letní rozvrh (do 23.8.): Po odpočinek, Út MT 1v1 Tomík (6:00), St silový A, Čt Zone 2, Pá MT sparring (flexibilně — když nevyjde, nahradit Zone 2/kroky), So silový B, Ne mobilita.
+- Sezónní rozvrh (od 31.8.): + fotbalové tréninky přípravky, které Petr vede jako trenér Po/St/Pá večer. Silový A se přesouvá na St ráno 7:00.
+- Silový trénink má 2 varianty: fitko (činky, hrazda) a doma (jednoručky + odporové gumy). Petr si vybírá podle dne.
+- Zdravotní omezení: šetřit lýtko — žádné explozivní odrazy/skoky/běh.
 - Doplňky (dnes odškrtnuto: ${SUPPS.filter(s=>suppToday.checked[s.name]).map(s=>s.name).join(', ')||'nic'}): ${SUPPS.map(s=>s.name+' '+s.dose).join('; ')}. Kofein max do 14:00.
 
 POSLEDNÍCH 21 CHECK-INŮ:
@@ -954,7 +1023,7 @@ function addAction(text){
 function renderChatHistory(){
   $('chatScroll').innerHTML='';
   if(chatHistory.length===0){
-    addMsg('assistant','Ahoj Petře! 👋 Jsem tvůj kouč — vidím tvůj plán, všechny check-iny i dnešní trénink.\n\nMůžeš mi rovnou nadiktovat dnešní data („84,1 kg, 2100 kcal, 11k kroků") a já je zapíšu. Nebo se zeptej na cokoli k progresu, jídlu či tréninku.');
+    addMsg('assistant','Ahoj Petře! 👋 Jsem tvůj kouč — vidím tvůj plán, všechny check-iny i dnešní trénink.\n\nMůžeš mi rovnou nadiktovat dnešní data („87,1 kg, 2100 kcal, 11k kroků") a já je zapíšu. Nebo se zeptej na cokoli k progresu, jídlu či tréninku.');
     return;
   }
   chatHistory.forEach(m=>{
