@@ -546,6 +546,7 @@ const SEASON_START = new Date(2026,7,31);   // 31.8.2026 — fotbal Po/St/Pá
 const CAMP_START = new Date(2026,7,24), CAMP_END = new Date(2026,7,31); // kemp 24.–30.8.
 const REST_DAY = {name:'Pondělí',icon:'😴',title:'Aktivní odpočinek',color:'#64748b',
   items:[{t:'Aktivita',c:'#64748b',lines:['Chůze 10 000+ kroků','Lehké protažení dle potřeby','Žádný intenzivní trénink']},
+         {t:'Volitelný 3. silový (když vyjde čas)',c:'#10b981',lines:['Venku: okruh 3–4 kola — kliky, goblet dřepy, výpady, DB row, plank 45 s','Nebo gym: lehčí full-body, důraz na techniku','Lýtko šetřit — žádné skoky a sprinty','Není povinný — priorita jsou St (fitko) + So (doma)']},
          {t:'Regenerace',c:'#8b5cf6',lines:['Cíl spánek 7:30+','Hydratace 2,5–3 l','Večer +30 g sacharidů — glykogen na ranní MT']}]};
 const MT_DAY = {name:'Úterý',icon:'🥊',title:'MT 1v1 Tomík — 6:00',color:'#f59e0b',
   items:[{t:'Před tréninkem',c:'#f59e0b',lines:['Max banán / rýžové chlebíčky 30 min před','Pít hned po probuzení']},
@@ -565,7 +566,7 @@ function gymDay(name, variant, extraTitle){
 }
 const SCHEDULES = {
   summer:{ label:'☀️ Letní režim (do 23. 8.)', days:{
-    1:REST_DAY, 2:MT_DAY, 3:gymDay('Středa',GYM_A), 4:Z2_DAY, 5:SPAR_DAY, 6:gymDay('Sobota',GYM_B), 0:MOB_DAY }},
+    1:REST_DAY, 2:MT_DAY, 3:gymDay('Středa',GYM_A,' — fitko'), 4:Z2_DAY, 5:SPAR_DAY, 6:gymDay('Sobota',GYM_B,' — doma'), 0:MOB_DAY }},
   camp:{ label:'🏕️ Kemp (24.–30. 8.)', days:(()=>{
     const campDay = n=>({name:n,icon:'🏕️',title:'Fotbalový kemp — celý den',color:'#f97316',
       items:[{t:'Celodenní vedení kempu',c:'#f97316',lines:['Počítej 15 000+ kroků — velký výdej','Vlastní trénink tento týden neřeš','Kcal navýšeny na 2400 — jez pravidelně']},
@@ -579,12 +580,12 @@ const SCHEDULES = {
       items:[{t:'Coaching',c:'#8b5cf6',lines:['Šetři energii — jsi trenér, ne hráč','Počítá se jako lehká aktivita + kroky']},
              {t:'Regenerace',c:'#64748b',lines:['Jinak odpočinkový den','Večer +30 g sacharidů — ranní MT zítra']}]},
     2:MT_DAY,
-    3:gymDay('Středa',GYM_A,' — ráno 7:00 (večer fotbal)'),
+    3:gymDay('Středa',GYM_A,' — fitko ráno 7:00 (večer fotbal)'),
     4:Z2_DAY,
     5:{name:'Pátek',icon:'🥊',title:'Sparring 7:00 (flex.) + fotbal večer',color:'#ef4444',
       items:[{t:'Když sparring vyjde',c:'#ef4444',lines:['Technika > síla, kontrolovaná intenzita','Whey okamžitě po','Večer fotbal: šetři se, náročný den']},
              {t:'Když sparring nevyjde',c:'#06b6d4',lines:['Nahraď: Zone 2 25 min ráno, nebo nech volno','Fotbal večer zůstává']}]},
-    6:gymDay('Sobota',GYM_B),
+    6:gymDay('Sobota',GYM_B,' — doma'),
     0:MOB_DAY }},
 };
 function getSchedule(d){
@@ -991,7 +992,7 @@ KONTEXT PROGRAMU "fitness_2026" (v2 — restart):
 - Aktuální režim: ${sched.label}. Dnes je ${day.name}: ${day.title}.
 - Letní rozvrh (do 23.8.): Po odpočinek, Út MT 1v1 Tomík (6:00), St silový A, Čt Zone 2, Pá MT sparring (flexibilně — když nevyjde, nahradit Zone 2/kroky), So silový B, Ne mobilita.
 - Sezónní rozvrh (od 31.8.): + fotbalové tréninky přípravky, které Petr vede jako trenér Po/St/Pá večer. Silový A se přesouvá na St ráno 7:00.
-- Silový trénink má 2 varianty: fitko (činky, hrazda) a doma (jednoručky + odporové gumy). Petr si vybírá podle dne.
+- Silové tréninky: St = silový A primárně ve fitku, So = silový B primárně doma (jednoručky + gumy); varianty lze v aplikaci přepnout. Navíc VOLITELNÝ 3. trénink dle času — venku (okruh s vlastní vahou/jednoručkou) nebo gym, typicky Po. Nabízej ho jen když má Petr dobrý týden a čas, není povinný a jeho vynechání nikdy nekritizuj.
 - Parametry: 179,5 cm, 36 let, BMR ~1820 kcal, odhad TDEE ~2700–2800 kcal při plném režimu (hodinky ø 550–600 aktivních kcal, kroky ø 9k s cílem 10–12k). Deficit na 2100 kcal ≈ 0,55–0,65 kg/týden.
 - VÍKENDY — REŽIM „TVRDĚ A ČISTĚ": Petrova slabina byly víkendové grilovačky a pivo. Sám si zvolil abstinentský přístup: střídmost mu nefunguje, jasná pravidla ano. Podporuj ho v tom: (1) během deficitových týdnů alkohol a volné jídlo prostě NE — víkend jede podle plánu stejně jako všední den; (2) výjimky jsou POUZE plánované: dietní pauza T13 a Vánoce T24 — tam si může dát grilovačku i pivo bez výčitek, připomínej mu, že to má v plánu (není to „navždy", jen do další pauzy); (3) pomáhej mu s tvrdým režimem prakticky — co si vzít na grilovačku, když tam musí být (nealko, maso, žádné přílohy), jak odmítat pivo bez řečí; (4) NIKDY mu sám nenabízej „dej si s mírou" — to je přesně to, co mu nejde; (5) když přesto ujede a zapíše to, žádné moralizování ani kompenzační hladovění — konstatuj, vysvětli, že váha nahoře je hlavně voda, a další jídlo jede normálně podle plánu. Jeden ujetý večer nikdy nezničí týden — zničí ho až spirála potom.
 - Zdravotní omezení: šetřit lýtko — žádné explozivní odrazy/skoky/běh.
