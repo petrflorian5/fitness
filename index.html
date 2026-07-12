@@ -120,6 +120,11 @@ canvas{max-width:100%}
 .typing span:nth-child(2){animation-delay:.2s}
 .typing span:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,70%,100%{opacity:.25}35%{opacity:1}}
+.chat-attach{width:44px;height:44px;border-radius:13px;background:var(--card2);border:1px solid var(--line2);font-size:17px;flex-shrink:0;transition:all .15s}
+.chat-attach:hover{border-color:var(--green)}
+.chat-attach-preview{display:none;align-items:center;gap:10px;padding:8px 20px;border-top:1px solid var(--line);background:#fff;font-size:12px;font-weight:600;color:var(--sec)}
+.chat-attach-preview img{height:44px;border-radius:8px}
+.msg img.msg-img{max-width:220px;width:100%;border-radius:10px;display:block;margin-bottom:6px}
 
 /* ── Tables ── */
 .tbl-wrap{overflow-x:auto;border-radius:14px}
@@ -302,7 +307,10 @@ tr.cur-week td{background:var(--green-bg)}
       <button class="sug" onclick="suggest(this)">Dnes 87,1 kg, 2100 kcal, 11 000 kroků</button>
       <button class="sug" onclick="suggest(this)">Co mám dnes trénovat?</button>
     </div>
+    <div class="chat-attach-preview" id="chatAttachPreview"></div>
     <div class="chat-input-row">
+      <button class="chat-attach" onclick="document.getElementById('chatImgFile').click()" title="Přiložit obrázek (screen z hodinek, tabulky…)">📷</button>
+      <input type="file" id="chatImgFile" accept="image/*" style="display:none" onchange="if(this.files[0])attachChatImage(this.files[0]);this.value=''">
       <textarea class="chat-input" id="chatInput" rows="1" placeholder="Napiš zprávu… (Enter = odeslat)"></textarea>
       <button class="chat-send" id="chatSend" onclick="sendChat()">↑</button>
     </div>
@@ -1144,20 +1152,33 @@ ${recent}
 
 PRAVIDLA:
 - Když ti uživatel nadiktuje denní data (váha, kcal, kroky…), VŽDY je ulož nástrojem save_checkin a pak stručně okomentuj progres vůči plánu.
+- Petr ti může poslat OBRÁZEK (screenshot z hodinek, kalorických tabulek, fotku jídla). Vyčti z něj relevantní čísla (kcal, makra, kroky, spánek, spálené kcal…), stručně shrň, co vidíš, a rovnou je ulož přes save_checkin. Pokud není jasné, ke kterému dni patří, zeptej se. U fotky jídla odhadni kcal a makra.
 - Odpovídej stručně (2–6 vět), konkrétně, s čísly. Formátování: max tučné zvýraznění, žádné dlouhé seznamy.
 - Při týdenním vyhodnocení porovnej průměr váhy s cílem týdne, zhodnoť konzistenci check-inů, kalorie a kroky, a dej 1–3 konkrétní doporučení.
 - KALIBRACE: pokles < 0,4 kg/týden 2 týdny po sobě → doporuč −100 kcal nebo +2000 kroků. Pokles > 0,8 kg/týden (mimo T1) → doporuč +100 kcal, chráníme svaly a MT výkon. Vždy vysvětli proč.
 - Nejsi lékař — u zdravotních problémů doporuč odborníka.`;
 }
 
-function addMsg(role, text, cls){
+function addMsg(role, text, cls, imgUrl){
   const div = document.createElement('div');
   div.className = 'msg '+role+(cls?' '+cls:'');
-  div.textContent = text;
+  if(imgUrl){ const im=document.createElement('img'); im.className='msg-img'; im.src=imgUrl; div.appendChild(im); }
+  if(text){ const sp=document.createElement('span'); sp.textContent=text; div.appendChild(sp); }
   $('chatScroll').appendChild(div);
   $('chatScroll').scrollTop = $('chatScroll').scrollHeight;
   return div;
 }
+let chatAttachment = null;
+async function attachChatImage(file){
+  const blob = await compressPhoto(file);
+  const dataUrl = await new Promise(r=>{ const fr=new FileReader(); fr.onload=()=>r(fr.result); fr.readAsDataURL(blob); });
+  chatAttachment = { data: dataUrl.split(',')[1], dataUrl };
+  const pv=$('chatAttachPreview');
+  pv.style.display='flex';
+  pv.innerHTML='<img src="'+dataUrl+'"><span>Obrázek připojen — přidej text nebo rovnou odešli</span><button class="photo-del" onclick="clearChatAttachment()">✕</button>';
+  $('chatInput').focus();
+}
+function clearChatAttachment(){ chatAttachment=null; const pv=$('chatAttachPreview'); if(pv){pv.style.display='none'; pv.innerHTML='';} }
 function addAction(text){
   const div = document.createElement('div');
   div.className = 'msg-action';
@@ -1218,15 +1239,21 @@ let apiMessages = []; // interní formát pro API (s tool_use bloky) — drží 
 async function sendChat(){
   const input = $('chatInput');
   const text = input.value.trim();
-  if(!text || chatBusy) return;
+  if((!text && !chatAttachment) || chatBusy) return;
   if(!cfg.url || !cfg.token){ showSettings(); toast('Nejdřív nastav připojení k Workeru'); return; }
   input.value=''; input.style.height='auto';
   chatBusy = true; $('chatSend').disabled = true;
   $('chatStatus').textContent = 'Přemýšlí…';
 
-  addMsg('user', text);
-  chatHistory.push({role:'user', text});
-  apiMessages.push({role:'user', content:text});
+  const att = chatAttachment; clearChatAttachment();
+  addMsg('user', text, null, att?att.dataUrl:null);
+  chatHistory.push({role:'user', text:(att?'📷 ':'')+(text||'obrázek')});
+  let userContent;
+  if(att){
+    userContent = [{type:'image',source:{type:'base64',media_type:'image/jpeg',data:att.data}}];
+    userContent.push({type:'text',text:text||'Tady je obrázek — vyčti z něj relevantní data.'});
+  } else userContent = text;
+  apiMessages.push({role:'user', content:userContent});
 
   const typing = document.createElement('div');
   typing.className='msg assistant typing'; typing.innerHTML='<span></span><span></span><span></span>';
@@ -1236,9 +1263,14 @@ async function sendChat(){
     const tools = JSON.parse(JSON.stringify(TOOLS).replace('DNESKEY', todayKey()));
     let rounds = 0;
     while(rounds++ < 5){
+      // starší obrázky vypustit z kontextu (šetří tokeny), poslední zůstávají
+      const msgs = apiMessages.slice(-24).map((m,i,arr)=>{
+        if(i>=arr.length-6 || !Array.isArray(m.content)) return m;
+        return {...m, content: m.content.map(b=>b.type==='image'?{type:'text',text:'[dříve poslaný obrázek]'}:b)};
+      });
       const resp = await api('/chat',{method:'POST',body:JSON.stringify({
         system: buildSystem(),
-        messages: apiMessages.slice(-24),
+        messages: msgs,
         tools, max_tokens: 1500,
       })});
       if(resp.error) throw new Error(resp.error.message||JSON.stringify(resp.error));
