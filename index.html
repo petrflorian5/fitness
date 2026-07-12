@@ -541,20 +541,19 @@ const PLAN = [
   {w:26,d:"4.1–10.1",ph:2,kcal:1900,pr:172,ch:172,fa:58,tg:75.0,note:"🎯 CÍL 75 KG DOSAŽEN!"},
 ];
 const SUPPS = [
-  {name:"Whey protein",dose:"25–40 g",timing:"Po tréninku",tier:"A"},
-  {name:"Kreatin monohydrát",dose:"3–5 g",timing:"Kdykoli — konzistentně",tier:"A"},
-  {name:"Vitamín D3 + K2",dose:"D3: 2 000–4 000 IU · K2: 100 mcg",timing:"Se snídaní (tučné jídlo)",tier:"A"},
+  {name:"Whey protein",dose:"60 g",timing:"Ráno — součást snídaně",tier:"A"},
+  {name:"Kreatin monohydrát",dose:"10 g",timing:"Ráno se snídaní",tier:"A"},
+  {name:"Vitamín D3 + K2",dose:"D3: 2 000–4 000 IU · K2: 100 mcg",timing:"Ráno se snídaní (tučné jídlo)",tier:"A"},
+  {name:"Omega-3 EPA+DHA",dose:"2–3 g",timing:"Ráno se snídaní",tier:"A"},
+  {name:"Beta-alanin",dose:"3,2–4 g",timing:"Ráno (celá dávka)",tier:"B"},
+  {name:"Zinek",dose:"15–25 mg",timing:"Ráno s jídlem",tier:"B"},
   {name:"Mg bisglycinate",dose:"225 mg",timing:"Večer 30 min před spaním",tier:"A"},
-  {name:"Magnerot (orotát)",dose:"2× 500 mg",timing:"Ráno",tier:"A"},
-  {name:"Omega-3 EPA+DHA",dose:"2–3 g",timing:"S tučným jídlem",tier:"A"},
-  {name:"Beta-alanin",dose:"3,2–4 g split",timing:"Ráno + odpoledne",tier:"B"},
-  {name:"Zinek",dose:"15–25 mg",timing:"Večer s jídlem",tier:"B"},
+  {name:"Magnerot (orotát)",dose:"2× 500 mg",timing:"Večer",tier:"A"},
 ];
 const TIMING = [
-  {time:"Ráno",color:"#f59e0b",items:["Magnerot 2× 500 mg","D3 + K2 se snídaní (tučné jídlo)","Omega-3 s jídlem","Beta-alanin 1. dávka"]},
-  {time:"Po tréninku",color:"#10b981",items:["Whey protein 25–40 g","Kreatin 3–5 g"]},
-  {time:"Odpoledne",color:"#3b82f6",items:["Beta-alanin 2. dávka"]},
-  {time:"Večer",color:"#8b5cf6",items:["Mg bisglycinate 225 mg (30 min před spaním)","Zinek 15–25 mg s jídlem"]},
+  {time:"Ráno — vše najednou se snídaní",color:"#f59e0b",items:["Whey protein 60 g (součást snídaně)","Kreatin 10 g","D3 + K2 (tučné jídlo)","Omega-3 2–3 g","Beta-alanin celá dávka","Zinek 15–25 mg"]},
+  {time:"Večer",color:"#8b5cf6",items:["Mg bisglycinate 225 mg (30 min před spaním)","Magnerot 2× 500 mg"]},
+  {time:"Pozn.",color:"#64748b",items:["V tréninkové dny (MT 6:00): snídaně se vším až po tréninku","Beta-alanin naráz může brnět v obličeji — neškodné; kdyby vadilo, rozděl na 2×"]},
 ];
 const DAYS_CZ = ['Ne','Po','Út','St','Čt','Pá','So'];
 
@@ -1145,7 +1144,7 @@ KONTEXT PROGRAMU "fitness_2026" (v2 — restart):
 - VÍKENDY — REŽIM „TVRDĚ A ČISTĚ": Petrova slabina byly víkendové grilovačky a pivo. Sám si zvolil abstinentský přístup: střídmost mu nefunguje, jasná pravidla ano. Podporuj ho v tom: (1) během deficitových týdnů alkohol a volné jídlo prostě NE — víkend jede podle plánu stejně jako všední den; (2) výjimky jsou POUZE plánované: dietní pauza T13 a Vánoce T24 — tam si může dát grilovačku i pivo bez výčitek, připomínej mu, že to má v plánu (není to „navždy", jen do další pauzy); (3) pomáhej mu s tvrdým režimem prakticky — co si vzít na grilovačku, když tam musí být (nealko, maso, žádné přílohy), jak odmítat pivo bez řečí; (4) NIKDY mu sám nenabízej „dej si s mírou" — to je přesně to, co mu nejde; (5) když přesto ujede a zapíše to, žádné moralizování ani kompenzační hladovění — konstatuj, vysvětli, že váha nahoře je hlavně voda, a další jídlo jede normálně podle plánu. Jeden ujetý večer nikdy nezničí týden — zničí ho až spirála potom.
 - RANNÍ RITUÁL (Petrův návyk, podporuj ho): vstát → záchod → VÁŽENÍ (vždy před pitím a jídlem!) → 400–500 ml vody → snídaně (dřív či později). Díky tomu jsou ranní váhy konzistentní.
 - Zdravotní omezení: šetřit lýtko — žádné explozivní odrazy/skoky/běh.
-- Doplňky (dnes odškrtnuto: ${SUPPS.filter(s=>suppToday.checked[s.name]).map(s=>s.name).join(', ')||'nic'}): ${SUPPS.map(s=>s.name+' '+s.dose).join('; ')}. Kofein max do 14:00.
+- Doplňky — Petrova rutina: RÁNO vše najednou se snídaní (whey 60 g jako součást snídaně, kreatin 10 g, D3+K2, omega-3, beta-alanin, zinek), VEČER Mg bisglycinate 225 mg + Magnerot 2×500 mg. V tréninkové dny snídaně (a doplňky) až po ranním tréninku. Kofein max do 14:00. Dnes odškrtnuto: ${SUPPS.filter(s=>suppToday.checked[s.name]).map(s=>s.name).join(', ')||'nic'}.
 
 POSLEDNÍCH 21 CHECK-INŮ:
 ${recent}
